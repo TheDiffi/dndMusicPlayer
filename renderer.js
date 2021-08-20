@@ -23,6 +23,8 @@ Array.from(mButtons).forEach((el) => {
   });
 });
 
+
+//------------------Ambience Btns---------------------
 var aButtons = document.getElementsByClassName("btn ambience-btn");
 //for each Ambience Button -> add an Event Listener
 for (const el of aButtons) {
@@ -34,28 +36,6 @@ for (const el of aButtons) {
     }
   });
 }
-
-
-const cButton = document.getElementById('closeAll');
-cButton.addEventListener('click', () => {
-  if (document.getElementsByClassName("btn ambiencePauseBtn").length > 0) {
-    ipcRenderer.send('ambience-quit', cButton.id);
-  }
-});
-
-const sButton = document.getElementById('ri-roll');
-sButton.addEventListener('click', () => {
-  playYtVideo('https://www.youtube.com/embed/iik25wqIuFo?autoplay=1');
-});
-
-
-
-const submitBtn = document.getElementById('submitBtn');
-submitBtn.addEventListener('click', submitYtUrl);
-
-
-
-
 
 function appendPauseBtn(element, elId) {
   const btnId = `${elId}PauseBtn`;
@@ -74,24 +54,46 @@ function appendPauseBtn(element, elId) {
   return button;
 }
 
-
-ipcRenderer.on('ambience-delete-btn', (event, btnId) => {
-  if (btnId === 'closeAll') {
-    const allBtns = document.getElementsByClassName("btn ambiencePauseBtn");
-    Array.from(allBtns).forEach((btn) => { btn.parentNode.removeChild(btn) })
-
-  } else {
-    const btn = document.getElementById(btnId);
-    btn.parentNode.removeChild(btn);
-    return false;
+const cButton = document.getElementById('closeAll');
+cButton.addEventListener('click', () => {
+  if (document.getElementsByClassName("btn ambiencePauseBtn").length > 0) {
+    ipcRenderer.send('ambience-quit', cButton.id);
   }
 });
 
 
+ipcRenderer.on('ambience-delete-btn', (event, btnId) => {
+  if (btnId === 'closeAll') {
+    deleteAllAmbienceBtns();
 
+  } else {
+    deleteBtn(btnId);
+   
+  }
+});
+
+function deleteBtn(btnId){
+  const btn = document.getElementById(btnId);
+  btn.parentNode.removeChild(btn);
+}
+
+function deleteAllAmbienceBtns(){
+  const allBtns = document.getElementsByClassName("btn ambiencePauseBtn");
+  Array.from(allBtns).forEach((btn) => { btn.parentNode.removeChild(btn) })
+}
+
+//----------------------------other-------------------------------
+
+const sButton = document.getElementById('ri-roll');
+sButton.addEventListener('click', () => {
+  playYtVideo('https://www.youtube.com/embed/iik25wqIuFo?autoplay=1');
+});
 
 
 // _______________YOUTUBE_____________________
+
+const submitBtn = document.getElementById('submitBtn');
+submitBtn.addEventListener('click', submitYtUrl);
 
 function submitYtUrl(e) {
   const ytUrl = document.querySelector('#ytUrl').value;

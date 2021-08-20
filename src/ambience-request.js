@@ -5,49 +5,51 @@ const ambienceWindows = new Map(/*key=pauseButtonId, value=BrowserWindow*/);
 //hacky stuff, very bad
 let mainWinWebContents = null;
 
-ipcMain.on('ambience-request', (event, id, buttonId) => {
-    if (!ambienceWindows.has(buttonId)) {
+ipcMain.on('ambience-duplicate-check', (event, musicId) => {
+    console.log("duplicate = " + ambienceWindows.has(`${musicId}PauseBtn`));
+    event.returnValue = !ambienceWindows.has(`${musicId}PauseBtn`);
+});
 
+
+ipcMain.on('ambience-request', (event, musicId, buttonId) => {
         const win = createWindow();
-        //registers the corresponding Button and window in the map
-        ambienceWindows.set(buttonId, win);
-        console.log('ambience-request');
         win.webContents.once('dom-ready', () => {
-            //confihures popup window
-            win.webContents.send('play-ambience', id);
-            //appends pause btn on mainWindow
-            event.sender.send('append-pauseBtn-ambience')
+            //configures popup window
+            win.webContents.send('play-ambience', musicId, buttonId);
         });
 
-    }
+        //registers the corresponding Button and window in the map
+        ambienceWindows.set(buttonId, win);
 
-
+    //again, i feel bad for this code
     mainWinWebContents = event.sender;
 
 });
 
+
+
 //closes the window corresponding eith the btnId
 ipcMain.on('ambience-quit', (event, buttonId) => {
     if (buttonId === 'closeAll') {
-        ambienceWindows.forEach((value, key) => { value.close() });
         event.sender.send('ambience-delete-btn', 'closeAll');
+        ambienceWindows.forEach((value, key) => { value.close() });
+        //clears the map
+        ambienceWindows.clear();
 
     } else {
         ambienceWindows.get(buttonId).close();
-        event.sender.send('ambience-delete-btn', buttonId);
+        ambienceWindows.delete(buttonId);
+
+        //event.sender.send('ambience-delete-btn', buttonId);
+        //TODO: this is hacky and does not work with multiple mainWindows
+        mainWinWebContents.send('ambience-delete-btn', buttonId);
+        console.log(buttonId);
 
     }
+
 });
 
-ipcMain.on('ambience-quit2', (event) => {
-    ambienceWindows.forEach((value, key) => {
-        if (value.webContents.id === event.sender.id) {
-            //TODO: this is hacky and does not work with multiple mainWindows
-            mainWinWebContents.send('ambience-delete-btn', key);
-            console.log(key);
-        }
-    });
-});
+
 
 
 
@@ -71,5 +73,6 @@ function createWindow() {
 
     // and load the index.html of the app.
     win.loadFile('./section/ambience.html');
+
     return win;
 }

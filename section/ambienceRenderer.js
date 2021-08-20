@@ -4,12 +4,15 @@
 console.log('renderer log');
 
 const { ipcRenderer } = require('electron');
-
+var pauseButtonId = null;
 
 //------------ Music Buttons ------------------------
 
-ipcRenderer.on('play-ambience', (event, id) => {
-    let url = ipcRenderer.sendSync('music-request', id);
+ipcRenderer.on('play-ambience', (event, musicId, buttonId) => {
+    //saves the pauseButtonId 
+    pauseButtonId = buttonId
+
+    let url = ipcRenderer.sendSync('music-request', musicId);
     console.log(url);
     if (url) {
         playYtVideo(url);
@@ -24,8 +27,7 @@ function playYtVideo(url) {
 
 const exitBtn = document.getElementById('exitBtn');
 exitBtn.addEventListener('click', () => {
-    ipcRenderer.send('ambience-quit2');
-    window.close();
-    
+    ipcRenderer.send('ambience-quit', pauseButtonId);
+
 }); 
 
