@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/css/ambience.css" />
+
+    <title></title>
+  </head>
+  <body>
+    <div class="top-bar">
+      <button id="exitBtn">X</button>
+    </div>
+    
+    <form>
+      <div id="ytAmbience"></div>
+      <iframe
+        width="384"
+        height="216"
+        id="ytEmbed"
+        src=""
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="-webkit-app-region: no-drag"
+      ></iframe>
+    </form>
+
+    <!-- You can also require other files to run in this process -->
+    <script type="text/javascript">
+      require("./ambienceRenderer");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" />
+        <link href="./assets/css/index.css" rel="stylesheet" />
+        <title>DnD Music Player</title>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="site-header mb-1">
+                <div class="site-name-container bg-color-1">
+                    <h1 class="text-white">D&D</h1>
+                </div>
+                <div class="nav-container bg-color-8">
+                    <nav class="nav" id="nav">
+                        <ul>
+                            <li class="nav-item current">
+                                <a class="nav-link" id="testBtn">
+                                    <span class="mb-1">.01</span>
+                                    <span>Unused</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link">
+                                    <span class="mb-1">.02</span>
+                                    <span>Unused</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="ri-roll">
+                                    <span class="mb-1">.03</span>
+                                    <span>Click Me!</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="closeAll">
+                                    <span class="mb-1">.04</span>
+                                    <span>Close All</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <section class="mb-1" id="about">
+                <div class="row about-row">
+                    <div class="section-1-l" id="ytContainer">
+
+                        <iframe
+                            id="ytEmbed"
+                            class="img-responsive"
+                            src="https://www.youtube.com/embed/dd10InDdvJE"
+                            title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                        >
+                        </iframe>
+
+                        <label class="text-white">Enter Url</label>
+                        <div>
+                            <button class="btn" id="submitBtn">Enter</button>
+                            <input type="text" id="ytUrl" placeholder="youtube.com/...." />
+                        </div>
+
+                    </div>
+                    <article class="section-1-r bg-color-8">
+                        <h2 class="mb-2 title-color">Music</h2>
+                         <!-- <p>
+                            <a target="_parent">Click</a>
+                            me!
+                        </p> -->
+
+                        <a class="btn music-btn" id="tavern">Tavern</a>
+                        <span class="musicResponse" id="tavernReply"></span>
+
+                        <a class="btn music-btn" id="battle">Battle</a>
+                        <span class="musicResponse" id="battleReply"></span> 
+                        
+                        <a class="btn music-btn" id="village">Village</a> 
+                        <span class="musicResponse" id="villageReply"></span>
+
+                        <a class="btn music-btn" id="forest">Forest</a> 
+                        <span class="musicResponse" id="forestReply"></span>
+
+                        <a class="btn music-btn" id="field">Field</a> 
+                        <span class="musicResponse" id="fieldReply"></span>
+
+
+                        <h2 class="mb-2 title-color">Ambience</h2>
+
+                        <a class="btn ambience-btn" id="rain">Rain</a> 
+                        <span class="ambienceResponse bg-color-7" id="rainReply"></span>
+
+                        <a class="btn ambience-btn" id="chatter">People</a> 
+                        <span class="ambienceResponse" id="chatterReply"></span>
+                    </article>
+                </div>
+            </section>
+
+    <!-- <div class="bg-color-1 mb-1 row social-row">
+        <div class="icon">
+          <div class="icon-inner">
+            <a href="#services">
+              <i class="fas fa-synagogue fa-4x mb-1"></i>
+              <p>Aenean vel est id massa condimentum</p>
+            </a>
+          </div>
+        </div>
+        <div class="icon">
+          <div class="icon-inner">
+            <a href="#gallery">
+              <i class="fas fa-chart-bar fa-4x mb-1"></i>
+              <p>Suspendisse interdum lectus purus</p>
+            </a>
+          </div>
+        </div>
+        <div class="icon">
+          <div class="icon-inner">
+            <a href="#contact">
+              <i class="fas fa-images fa-4x mb-1"></i>
+              <p>Nulla ac sodales est vel iaculis purus</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+            <!-- You can also require other files to run in this process -->
+            <script type="text/javascript">
+                require("./renderer");
+            </script>
+        </div>
+    </body>
+</html>

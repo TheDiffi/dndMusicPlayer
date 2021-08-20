@@ -1,0 +1,31 @@
+#draggableBar {
+  -webkit-app-region: drag;
+}
+
+#exitBtn {
+  font-size: 1.1rem;
+  border: none;
+  background-color: transparent;
+  color: white;
+  -webkit-app-region: no-drag;
+  
+}
+
+#exitBtn:hover{
+
+    background-color: #75759b;
+
+}
+
+.top-bar {
+  width: 29.752%;
+  min-width: 300px;
+  margin-right: 20px;
+  height: 20px;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  text-transform: uppercase;
+  -webkit-app-region: drag;
+  background-color: #9999cc;
+}
