@@ -53,7 +53,6 @@ ipcMain.on('ambience-quit', (event, buttonId) => {
 
 
 
-
 function createWindow() {
     // Create the browser window.
     let win = new BrowserWindow({

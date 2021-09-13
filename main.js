@@ -86,7 +86,4 @@ function loadScripts() {
 
 
 
-
-
-
 initialize()

@@ -1,0 +1,76 @@
+{
+    "music": [
+        {
+            "topic": "tavern",
+            "id": "dd10InDdvJE",
+            "length": "60"
+        },
+        {
+            "topic": "battle",
+            "id": "lAGm9MTyRJ8",
+            "length": "58"
+        },
+        {
+            "topic": "village",
+            "id": "Wd3kd0zY2bQ",
+            "length": "60"
+        },
+        {
+            "topic": "forest",
+            "id": "6Em9tLXbhfo",
+            "length": "170"
+        },
+        {
+            "topic": "field",
+            "id": "0qcsdctvhTM",
+            "length": "140"
+        },
+        {
+            "topic": "spooky",
+            "id": "kn4Qc3B7L_o",
+            "length": "20"
+        },
+        {
+            "topic": "puzzle",
+            "id": "YRqnZ_6MAHg",
+            "length": "20"
+        },
+        {
+            "topic": "cave",
+            "id": "K1JvqHnSHfc",
+            "length": "60"
+        },
+        {
+            "topic": "travel",
+            "id": "A8qMyBWZNw0",
+            "length": "57"
+        }
+    ],
+    "ambience": [
+        {
+            "topic": "rain",
+            "id": "KSSpVMIgN2Y",
+            "length": "180"
+        },
+        {
+            "topic": "chatter",
+            "id": "EULoybB2Nsw",
+            "length": "180"
+        },
+        {
+            "topic": "swords",
+            "id": "oBsHWwmXbcM",
+            "length": "60"
+        },
+        {
+            "topic": "wind",
+            "id": "sGkh1W5cbH4",
+            "length": "360"
+        },
+        {
+            "topic": "cave",
+            "id": "PpC3mSaIX_o",
+            "length": "60"
+        }
+    ]
+}

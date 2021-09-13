@@ -39,6 +39,7 @@ a {
     transition: all 0.3s ease; 
     text-decoration: none;
     margin-bottom: 5px;
+    margin-right: 5px;
 
 }
 
@@ -48,6 +49,11 @@ p {
   color: #666;
   line-height: 1.7; 
   margin-bottom: 15px;
+}
+
+input{
+  margin: 0 4px 4px 0;
+  border: solid #CC9999; 
 }
 
 h1, h2, h3, h4, h5, h6 { color: #333; }
@@ -568,6 +574,10 @@ button:hover { cursor: pointer; }
   height: 100%;
 }
 
+.ambiencePauseBtn {
+  margin-right: 5px;
+}
+
 @media (max-width: 992px) {
   .section-1-l,
   .section-1-r,
@@ -661,4 +671,8 @@ button:hover { cursor: pointer; }
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%)
+}
+
+.error{
+  border-color: red;
 }
