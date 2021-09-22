@@ -26,6 +26,8 @@ function createWindow() {
         }
     })
 
+    // Open the DevTools.
+    //win.webContents.openDevTools()
 
     // and load the index.html of the app.
     win.loadFile('./section/addSongPopup.html');

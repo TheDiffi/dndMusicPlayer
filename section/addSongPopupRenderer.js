@@ -12,7 +12,8 @@ document.getElementById("submit").addEventListener('click', () => {
         let songTopic = document.getElementById('topicInput').value;
         let songId = extractYtIdFromLink(document.getElementById('urlInput').value);
         let songLength = document.getElementById('lengthInput').value;
-        let songType =  document.getElementById('typeInput').value;
+        let songType = document.getElementById('typeInput').value;
+
         let song = { topic: songTopic, id: songId, length: songLength, type: songType }
 
         //sends the data
@@ -20,7 +21,7 @@ document.getElementById("submit").addEventListener('click', () => {
 
         window.close();
     } else {
-        
+
     }
 
 

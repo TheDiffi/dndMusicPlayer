@@ -22,6 +22,8 @@ ul, h1, h2, h3, h4, p, figure {
     margin: 0;
 }
 
+
+
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   font-size: 18px;
@@ -51,10 +53,7 @@ p {
   margin-bottom: 15px;
 }
 
-input{
-  margin: 0 4px 4px 0;
-  border: solid #CC9999; 
-}
+
 
 h1, h2, h3, h4, h5, h6 { color: #333; }
 
@@ -663,6 +662,12 @@ button:hover { cursor: pointer; }
   visibility: visible;
 }
 
+.select-music{
+  margin: 0 4px 4px 0;
+  border: solid #CC9999; 
+  flex: auto;
+}
+
 .test2 {
   
 
@@ -675,4 +680,8 @@ button:hover { cursor: pointer; }
 
 .error{
   border-color: red;
+}
+
+.playing{
+  background-color: #a34848;
 }
