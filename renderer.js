@@ -30,21 +30,14 @@ function generateMusicBtn(music) {
     const button = document.createElement('a');
     button.setAttribute('class', 'btn music-btn');
     button.setAttribute('id', music.topic);
-    button.innerHTML = music.topic;
-
-    button.addEventListener('click', () => {
-        let song = ipcRenderer.sendSync('music-request', button.id, 'music')
-        console.log(song);
-        if (song.topic) {
-            playYtVideo(parseYtIdToEmbedUrl(song.id, song.length, true, true));
-            setPlaying(button.id);
-        } else {
-            console.log('ERROR: button not configued yet. ytId = null');
-        }
-    });
+    button.setAttribute('function', 'play');
+    button.innerHTML = music.topic.charAt(0).toUpperCase() + music.topic.slice(1);
 
     parent.appendChild(button);
+    
+    button.addEventListener('click', () => {musicButtonOnClick(button)});
 }
+
 
 //generate Ambience Button Function
 function generateAmbienceBtn(ambience) {
@@ -54,13 +47,11 @@ function generateAmbienceBtn(ambience) {
     const button = document.createElement('a');
     button.setAttribute('class', 'btn ambience-btn');
     button.setAttribute('id', ambience.topic);
-    button.innerHTML = ambience.topic;
+    button.setAttribute('function', 'play');
+    button.innerHTML = ambience.topic.charAt(0).toUpperCase() + ambience.topic.slice(1);
 
-    button.addEventListener('click', () => {
-        if (ipcRenderer.sendSync('ambience-duplicate-check', button.id)) {
-            ipcRenderer.send('ambience-request', button.id, generateAmbiencePauseBtn(button, button.id).id);
-        }
-    });
+
+    button.addEventListener('click', () => {ambienceButtonOnClick(button)});
 
     //span
     const spanId = `${ambience.topic}Reply`;
@@ -71,6 +62,8 @@ function generateAmbienceBtn(ambience) {
     parent.appendChild(button);
     parent.appendChild(span);
 }
+
+
 
 
 //__________________RUNTIME___________________
@@ -119,6 +112,56 @@ function deleteAllAmbienceBtns() {
     Array.from(allBtns).forEach((btn) => { btn.parentNode.removeChild(btn) })
 }
 
+
+//_________________________BUTTONS___________________________________
+
+function musicButtonOnClick(button) {
+    switch (button.getAttribute('function')) {
+        case 'play':
+            playMusicFromButton(button);
+            break;
+        case 'stop':
+            //TODO: figure out how to stop YT embed
+            break;
+        case 'delete':
+            deleteSongFromButton(button);
+            break;
+        case 'edit':
+            //TODO: edit buttons
+            break;
+    }
+}
+
+function playMusicFromButton(button) {
+    let song = ipcRenderer.sendSync('song-request', button.id, 'music')
+    playYtVideo(parseYtIdToEmbedUrl(song.id, song.length, true, true));
+    setPlaying(button.id);
+    console.log(`Playing ${JSON.stringify(song)}`);
+
+}
+
+function ambienceButtonOnClick(button) {
+
+    switch (button.getAttribute('function')) {
+        case 'play':
+            if (ipcRenderer.sendSync('ambience-duplicate-check', button.id)) {
+                ipcRenderer.send('ambience-request', button.id, generateAmbiencePauseBtn(button, button.id).id);
+            }
+            break;
+        case 'stop':
+            //TODO: figure out how to stop YT embed
+            break;
+        case 'delete':
+            deleteSongFromButton(button);
+            break;
+        case 'edit':
+            //TODO: edit buttons
+            break;
+    }
+}
+
+
+
 //__________________________ADD SONG________________________________
 document.getElementById("btn-add-song").addEventListener('click', () => {
     console.log('Clicked Add Song Button!');
@@ -138,15 +181,40 @@ ipcRenderer.on('add-song-button', (event, song) => {
 //_______________DELETE SONG_________________________
 document.getElementById("btn-delete-song").addEventListener('click', () => {
     console.log('Clicked Delete Song Button!');
-    deleteSongPreview();
+    toggleDelPreview();
 });
 
-function deleteSongPreview() {
-    let allBtns = document.getElementsByClassName("btn ambience-btn");
-    Array.from(allBtns).forEach((btn) => {
-        btn.className = btn.className + ' delete';
-        btn.innerHTML = btn.innerHTML + ' 🗑️';
+function toggleDelPreview() {
+    let allAmbBtns = document.getElementsByClassName("btn ambience-btn");
+    Array.from(allAmbBtns).forEach((btn) => {
+        toggleDeleteHtml(btn)
     });
+
+    let allMusBtns = document.getElementsByClassName("btn music-btn");
+    Array.from(allMusBtns).forEach((btn) => {
+        toggleDeleteHtml(btn)
+    });
+}
+
+function toggleDeleteHtml(elem) {
+    if (elem.className.includes('delete')) {
+        elem.className = elem.className.replace(' delete', '');
+        elem.innerHTML = elem.innerHTML.replace(' 🗑️', '');
+        elem.setAttribute('function', 'play')
+
+    } else {
+        elem.className = elem.className + ' delete';
+        elem.innerHTML = elem.innerHTML + ' 🗑️';
+        elem.setAttribute('function', 'delete')
+    }
+}
+
+function deleteSongFromButton(button){
+    //remove from runtime & storage
+    console.log(button.className.replace(/btn |-|delete/g,''));
+    ipcRenderer.send('delete-song', button.id, button.className.replace(/btn| |-|delete|playing/g,''))
+    //remove from html
+    button.parentNode.removeChild(button);
 }
 
 
@@ -208,9 +276,11 @@ function setPlaying(idPlaying) {
     //deletes 'playing' for all music buttons
     for (const btn of btns) {
         btn.className = btn.className.replace(' playing', '')
+        btn.setAttribute('function', 'play');
     }
 
     //sets playing for the music button
+    document.getElementById(idPlaying).setAttribute('function', 'stop');
     document.getElementById(idPlaying).className += ' playing';
 }
 
@@ -238,13 +308,14 @@ ipcRenderer.on('test-reply', (event, arg) => {
 
 
 
+
 //------------ Music Buttons ------------------------
 /* var mButtons = document.getElementsByClassName("btn music-btn");
 //for each Music Button -> add an Event Listener
 Array.from(mButtons).forEach((el) => {
     let elId = el.getAttribute('id');
     el.addEventListener('click', () => {
-        let song = ipcRenderer.sendSync('music-request', elId, 'music')
+        let song = ipcRenderer.sendSync('song-request', elId, 'music')
         console.log(song);
         if (song.topic) {
             playYtVideo(parseYtIdToEmbedUrl(song.id, song.length, true, true));

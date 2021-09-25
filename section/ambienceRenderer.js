@@ -12,8 +12,8 @@ ipcRenderer.on('play-ambience', (event, musicId, buttonId) => {
     //saves the pauseButtonId 
     pauseButtonId = buttonId
 
-    let song = ipcRenderer.sendSync('music-request', musicId, 'ambience');
-    console.log('Got from music-request the ytId in ambience-renderer: ' + song);
+    let song = ipcRenderer.sendSync('song-request', musicId, 'ambience');
+    console.log('Got from song-request the ytId in ambience-renderer: ' + song);
     if (song) {
         playYtVideo(parseYtIdToEmbedUrl(song.id, 0, true, true));
     }

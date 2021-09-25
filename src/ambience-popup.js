@@ -5,14 +5,10 @@ const ambienceWindows = new Map(/*key=pauseButtonId, value=BrowserWindow*/);
 //hacky stuff, very bad
 let mainWinWebContents = null;
 
-ipcMain.on('ambience-duplicate-check', (event, musicId) => {
-    console.log("duplicate = " + ambienceWindows.has(`${musicId}PauseBtn`));
-    event.returnValue = !ambienceWindows.has(`${musicId}PauseBtn`);
-});
-
-
 ipcMain.on('ambience-request', (event, musicId, buttonId) => {
+
         const win = createWindow();
+        
         win.webContents.once('dom-ready', () => {
             //configures popup window
             win.webContents.send('play-ambience', musicId, buttonId);
@@ -27,6 +23,10 @@ ipcMain.on('ambience-request', (event, musicId, buttonId) => {
 });
 
 
+ipcMain.on('ambience-duplicate-check', (event, musicId) => {
+    console.log("duplicate = " + ambienceWindows.has(`${musicId}PauseBtn`));
+    event.returnValue = !ambienceWindows.has(`${musicId}PauseBtn`);
+});
 
 //closes the window corresponding eith the btnId
 ipcMain.on('ambience-quit', (event, buttonId) => {
@@ -48,8 +48,6 @@ ipcMain.on('ambience-quit', (event, buttonId) => {
     }
 
 });
-
-
 
 
 
