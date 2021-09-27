@@ -12,7 +12,7 @@
     <div class="top-bar">
       <button id="exitBtn">X</button>
     </div>
-    
+    <div id="ytContainer">
     <form>
       <div id="ytAmbience">
       <iframe
@@ -27,11 +27,12 @@
         style="-webkit-app-region: no-drag"
       ></iframe>
     </div>
+    </div>
     </form>
 
     <!-- You can also require other files to run in this process -->
     <script type="text/javascript">
-      require("./ambienceRenderer");
+      require("../out/renderer/ambienceRenderer");
     </script>
   </body>
 </html>
