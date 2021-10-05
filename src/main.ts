@@ -72,16 +72,8 @@ function loadScripts() {
   });
 }
 
-let b: any;
 
-ipcMain.on("test-send", () => {
-  if (b) {
-    console.log(b)
-    b.close()
-    b = null;
-  } else {
-    b = new BrowserWindow({ width: 800, height: 600 });
-  }
-});
+
+
 
 initialize();

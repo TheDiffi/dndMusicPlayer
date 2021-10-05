@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain, mainWin } from "../main";
-import { Song } from "../renderer";
+import { Song } from "..";
 export{}
 
 const assSongPopupFilepath = '../section/addSongPopup.html'

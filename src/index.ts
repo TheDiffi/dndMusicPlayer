@@ -1,7 +1,11 @@
-import { extractYtIdFromLink, parseYtIdToEmbedUrl, playYtUrl } from "./util/yt.util";
+import {
+  extractYtIdFromLink,
+  parseYtIdToEmbedUrl,
+  playYtUrl,
+} from "./util/yt.util";
 
 // This file is required by the index.html file and will
-export{ipcRenderer, Song}
+export { ipcRenderer, Song };
 // be executed in the renderer process for that window.
 const { ipcRenderer } = require("electron");
 console.log("Main Renderer: started");
@@ -79,54 +83,7 @@ function generateAmbienceBtn(ambience: Song) {
   parent.appendChild(span);
 }
 
-//__________________RUNTIME___________________
-//TODO: refractore
-function generateAmbiencePauseBtn(element: HTMLElement, elId: string) {
-  const btnId = `${elId}PauseBtn`;
-
-  const button = document.createElement("a");
-  button.setAttribute("class", "btn ambiencePauseBtn");
-  button.setAttribute("id", btnId);
-  button.innerHTML = "🛑 " + element.innerHTML;
-
-  element.parentElement?.appendChild(button);
-
-  button.addEventListener("click", () => {
-    ipcRenderer.send("ambience-quit", button.id);
-  });
-
-  return button;
-}
-
-//close all ambience button
-const cButton = document.getElementById("closeAll");
-cButton?.addEventListener("click", () => {
-  if (document.getElementsByClassName("btn ambiencePauseBtn").length > 0) {
-    ipcRenderer.send("ambience-quit", cButton.id);
-  }
-});
-
-ipcRenderer.on("ambience-delete-btn", (event: Event, btnId: string) => {
-  if (btnId !== "closeAll") {
-    deleteBtn(btnId);
-  } else {
-    deleteAllAmbienceBtns();
-  }
-});
-
-function deleteBtn(btnId: string) {
-  const btn = document.getElementById(btnId);
-  btn?.parentNode?.removeChild(btn);
-}
-
-function deleteAllAmbienceBtns() {
-  const allBtns = document.getElementsByClassName("btn ambiencePauseBtn");
-  Array.from(allBtns).forEach((btn) => {
-    btn.parentNode?.removeChild(btn);
-  });
-}
-
-//_________________________BUTTONS___________________________________
+//_________________________SONG BUTTONS___________________________________
 
 function musicButtonOnClick(button: HTMLElement) {
   switch (button.getAttribute("function")) {
@@ -146,25 +103,37 @@ function musicButtonOnClick(button: HTMLElement) {
 }
 
 function playMusicFromButton(button: HTMLElement) {
-  let song = ipcRenderer.sendSync("song-request", button.id, "music");
-  playYtUrl(parseYtIdToEmbedUrl(song.id, song.length, true, true));
-  setPlaying(button);
+  let song: Song = ipcRenderer.sendSync("song-request", button.id, "music");
+
+  playYtUrl(parseYtIdToEmbedUrl(song.id, true, true, song.length));
+  setMusicButtonToPlaying(button);
+
   console.log(`Playing ${JSON.stringify(song)}`);
+}
+
+function setMusicButtonToPlaying(btnPlaying: HTMLElement) {
+  let btns = document.getElementsByClassName("music-btn");
+
+  //deletes 'playing' for all music buttons
+  Array.from(btns, (btn) => {
+    btn.className = btn.className.replace(" playing", "");
+    btn.setAttribute("function", "play");
+  });
+
+  //sets playing for the music button
+  btnPlaying.setAttribute("function", "stop");
+  btnPlaying.setAttribute("class", btnPlaying.className + " playing");
 }
 
 function ambienceButtonOnClick(button: HTMLElement) {
   switch (button.getAttribute("function")) {
     case "play":
-      if (ipcRenderer.sendSync("ambience-duplicate-check", button.id)) {
-        ipcRenderer.send(
-          "ambience-request",
-          button.id,
-          generateAmbiencePauseBtn(button, button.id).id
-        );
-      }
+      ipcRenderer.sendSync("ambience-request", button.id);
+      setAmbienceButtonToPlaying(button);
+
       break;
     case "stop":
-      //TODO: figure out how to stop YT embed
+      ipcRenderer.send("ambience-close", button.id);
       break;
     case "delete":
       deleteSongFromButton(button);
@@ -172,6 +141,37 @@ function ambienceButtonOnClick(button: HTMLElement) {
     case "edit":
       //TODO: edit buttons
       break;
+  }
+}
+
+function setAmbienceButtonToPlaying(btnPlaying: HTMLElement) {
+  //sets playing for the music button
+  btnPlaying.setAttribute("function", "stop");
+  btnPlaying.setAttribute("class", btnPlaying.className + " playing");
+  btnPlaying.innerHTML = btnPlaying.innerHTML + "🛑";
+}
+
+ipcRenderer.on("ambience-closed", (event: Event, ambienceId: string) => {
+
+  if (ambienceId !== "closeAll") {
+    let btn = document.getElementById(ambienceId);
+    if (btn) setBtnToPlay(btn);
+
+  } else {
+    let allAmbBtns = document.getElementsByClassName("btn ambience-btn");
+    Array.from(allAmbBtns).forEach((btn) => {
+      setBtnToPlay(btn);
+    });
+  }
+});
+
+function setBtnToPlay(btn: Element) {
+  if (btn) {
+    btn.innerHTML = btn.innerHTML.replace("🛑", "");
+    btn.className = btn.className.replace(" playing", "");
+    btn.setAttribute("function", "play");
+  } else {
+    console.warn("COULD NOT SET TO PLAY: BUTTON IS UNDEFINED");
   }
 }
 
@@ -233,59 +233,54 @@ function deleteSongFromButton(button: HTMLElement) {
   );
   //remove from html
   button.parentNode?.removeChild(button);
+
+  //toggles the delete function 
+  toggleDelPreview();
 }
 
+//__________________OTHER EVENTS___________________
 
-// _______________YOUTUBE_____________________
+//close all ambience button
+const cButton = document.getElementById("closeAll");
+cButton?.addEventListener("click", () => {
+    ipcRenderer.send("ambience-close", 'closeAll');
+  
+});
 
 const submitBtn = document.getElementById("submitBtn");
 submitBtn?.addEventListener("click", () => {
-  const ytUrl = document.querySelector("#ytUrl")?.getAttribute("value");
+  const ytUrl = (<HTMLInputElement>document.getElementById('ytUrl')).value;
+  console.log(ytUrl)
   if (ytUrl) {
-    playYtUrl(parseYtIdToEmbedUrl(extractYtIdFromLink(ytUrl)));
+    playYtUrl(parseYtIdToEmbedUrl(extractYtIdFromLink(ytUrl), true, true));
   }
 });
-
-function setPlaying(btnPlaying: HTMLElement) {
-    let btns = document.getElementsByClassName("music-btn");
-  
-    //deletes 'playing' for all music buttons
-    Array.from(btns, btn =>{
-      btn.className = btn.className.replace(" playing", "");
-      btn.setAttribute("function", "play");
-    })
-   
-  
-    //sets playing for the music button
-    btnPlaying.setAttribute("function", "stop");
-    btnPlaying.setAttribute("class", btnPlaying.className + " playing");
-  }
 
 //----------------------------other-------------------------------
 
-const sButton = document.getElementById("ri-roll");
-sButton?.addEventListener("click", () => {
-  playYtUrl("https://www.youtube.com/embed/iik25wqIuFo?autoplay=1");
-});
-
-
 interface Song {
-    topic: string;
-    id: string;
-    length: number;
-    type: string;
-  }
-  
+  topic: string;
+  id: string;
+  length: number;
+  type: string;
+}
 
 //____________________TESTING_________________
 const testBtn = document.getElementById("testBtn");
 testBtn?.addEventListener("click", () => {
+  console.log(document.getElementsByClassName("btn ambience-btn").length);
+
   ipcRenderer.send("test-send", "test");
 });
 
 ipcRenderer.on("test-reply", (event: Event, arg: string) => {
   const message = `Reply: ${arg}`;
   document.getElementById("test-reply")?.setAttribute("innerHTML", message);
+});
+
+const sButton = document.getElementById("ri-roll");
+sButton?.addEventListener("click", () => {
+  playYtUrl("https://www.youtube.com/embed/iik25wqIuFo?autoplay=1");
 });
 
 //------------ Music Buttons ------------------------

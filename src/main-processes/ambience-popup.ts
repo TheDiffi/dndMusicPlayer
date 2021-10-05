@@ -1,81 +1,81 @@
-import {mainWin } from "../main";
-export{}
-const {BrowserWindow, ipcMain } = require('electron')
+import { mainWin } from "../main";
+export {};
+
+const { BrowserWindow, ipcMain } = require("electron");
+const ambienceWindows = new Map<string, string>(/*key=pauseButtonId, value=BrowserWindowId*/);
+const ambiencePopupFilepath = "../section/ambiencePopup.html";
 
 
-const ambienceWindows = new Map(/*key=pauseButtonId, value=BrowserWindow*/);
-const ambiencePopupFilepath = '../section/ambiencePopup.html'
 
-ipcMain.on('ambience-request', (event: Event, musicId: any, buttonId: any) => {
 
-        const win = createAmbienceWindow();
-        
-        win.webContents.once('dom-ready', () => {
-            //configures popup window
-            win.webContents.send('play-ambience', musicId, buttonId);
-        });
+ipcMain.on("ambience-request", (event: any, ambienceId: string) => {
 
-        //registers the corresponding Button and window in the map
-        ambienceWindows.set(buttonId, win);
-        console.log('Opened ambience Window: ')
-        console.log(ambienceWindows)
+  const win = createAmbienceWindow();
 
+  win.webContents.once("dom-ready", () => {
+    //configures popup window
+    win.webContents.send("play-ambience", ambienceId);
+
+    //registers the corresponding Button and window in the map
+    ambienceWindows.set(ambienceId, win.id);
+    console.log("Opened ambience Window. ID: " + win.id);
+
+    event.returnValue = true;
+  });
 });
-
-
-ipcMain.on('ambience-duplicate-check', (event: Event, musicId: any) => {
-    console.log("duplicate = " + ambienceWindows.has(`${musicId}PauseBtn`));
-    event.returnValue = !ambienceWindows.has(`${musicId}PauseBtn`);
-});
-
 
 
 //closes the window corresponding eith the btnId
-ipcMain.on('ambience-quit', (event: any, buttonId: string) => {
-    if (buttonId === 'closeAll') {
-        event.sender.send('ambience-delete-btn', 'closeAll');
-        ambienceWindows.forEach((value, key) => { value.close() });
-        //clears the map
-        ambienceWindows.clear();
+ipcMain.on("ambience-close", (event: any, ambienceId: string) => {
 
-    } else {
-        console.log('Found to close: ');
-        console.log(ambienceWindows.get(buttonId));
-        ambienceWindows.get(buttonId)?.close();
-        ambienceWindows.delete(buttonId);
+    if (ambienceId === "closeAll") {
+    ambienceWindows.forEach((value, key) => {
+        BrowserWindow.fromId(value).destroy();
+    });
 
-        //event.sender.send('ambience-delete-btn', buttonId);
-        mainWin.webContents.send('ambience-delete-btn', buttonId);
-        
+    //clears the map
+    ambienceWindows.clear();
+    console.log("Closed all ambience Windows");
 
-    }
+    //responds to caller
+    event.sender.send("ambience-closed", "closeAll");
 
+  } else {
+    let win = BrowserWindow.fromId(ambienceWindows.get(ambienceId))
+    console.log("Closed Ambience Window. ID: " + win.id);
+    win.destroy();
+
+    ambienceWindows.delete(ambienceId);
+
+    //responds to the caller
+    mainWin.webContents.send("ambience-closed", ambienceId);
+
+  }
 });
 
 
 
 function createAmbienceWindow() {
-    // Create the browser window.
-    let win = new BrowserWindow({
-        width: 400,
-        height: 260,
-        resizable: false,
-        autoHideMenuBar: true,
-        transparent: true,
-        alwaysOnTop: true,
-        frame: false,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    })
+  // Create the browser window.
+  let win = new BrowserWindow({
+    width: 400,
+    height: 260,
+    resizable: false,
+    autoHideMenuBar: true,
+    transparent: true,
+    alwaysOnTop: false,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
 
+  // and load the index.html of the app.
+  win.loadFile(ambiencePopupFilepath);
 
-    // and load the index.html of the app.
-    win.loadFile(ambiencePopupFilepath);
+  // Open the DevTools.
+  //win.webContents.openDevTools();
 
-    // Open the DevTools.
-    win.webContents.openDevTools()
-
-    return win;
+  return win;
 }

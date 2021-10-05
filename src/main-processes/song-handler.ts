@@ -1,4 +1,4 @@
-import { Song } from "../renderer";
+import { Song } from "..";
 export {};
 let fs = require("fs");
 var { ipcMain } = require("electron");
@@ -33,7 +33,6 @@ ipcMain.on("delete-song", (event: any, songTopic: string, songType: string) => {
 
 function getSongFromTopicAndType(songTopic: string, songType: string = "") {
   let song;
-  console.log(songType);
   switch (songType) {
     case "music":
       song = musicSongs.get(songTopic);
@@ -42,7 +41,6 @@ function getSongFromTopicAndType(songTopic: string, songType: string = "") {
       song = ambienceSongs.get(songTopic);
       break;
     default:
-      console.log(`CONTROL`);
       song = musicSongs.get(songTopic);
       song = ambienceSongs.get(songTopic);
   }

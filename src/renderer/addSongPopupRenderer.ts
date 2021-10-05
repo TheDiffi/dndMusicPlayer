@@ -13,10 +13,10 @@ document.getElementById("submit")?.addEventListener('click', () => {
 
     if (checkInput()) {
         //reads the user Input
-        let songTopic = document.getElementById('topicInput')?.getAttribute('value');
-        let songId = extractYtIdFromLink(document.getElementById('urlInput')?.getAttribute('value')!);
-        let songLength = document.getElementById('lengthInput')?.getAttribute('value');
-        let songType = document.getElementById('typeInput')?.getAttribute('value');
+        let songTopic =  (<HTMLInputElement>document.getElementById('topicInput'))?.value;
+        let songId = extractYtIdFromLink((<HTMLInputElement>document.getElementById('urlInput'))?.value);
+        let songLength = (<HTMLInputElement>document.getElementById('lengthInput'))?.value;
+        let songType = (<HTMLInputElement>document.getElementById('typeInput'))?.value;
 
         let song = { topic: songTopic, id: songId, length: songLength, type: songType }
 

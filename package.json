@@ -5,8 +5,9 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "start": "electron ./out/main.js",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "npm run build && electron ./out/main.js"
   },
   "author": "David Penn",
   "license": "",

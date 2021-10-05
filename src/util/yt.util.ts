@@ -15,16 +15,17 @@ function playYtUrl(url: string, appendToId: string = "ytContainer") {
 
 function extractYtIdFromLink(ytUrl: string) {
   var regExp =
-    /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    RegExp(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
   var match = ytUrl.match(regExp);
   return match && match[7].length == 11 ? match[7] : "";
 }
 
 function parseYtIdToEmbedUrl(
   ytId: string,
-  videoLength = 0,
   isAutoplay = false,
-  isLoop = false
+  isLoop = false,
+  videoLength = 0
+  
 ) {
   let autoplayParam = isAutoplay ? "autoplay=1" : "autoplay=0";
   let randomStartParam =
