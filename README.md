@@ -28,8 +28,9 @@ Customize registered Songs:
 
 Major:
 
-- Soundeffects playable via the quick selection
+- Add Soundeffects to the quick selection
 - Redesign for a less modern look
+- Make compatible with Online-DnD
 
 Minor:
 
