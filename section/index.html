@@ -1,133 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html>
+
+<head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans:400"
-      rel="stylesheet"
-    />
-    <link href="../assets/css/index.css" rel="stylesheet" />
-    <title>DnD Music Player</title>
-  </head>
+    <title>D&D Music Player</title>
+    <link rel="stylesheet" href="../assets/css/new/index.css" />
 
-  <body>
-    <div class="container-fluid">
-      <div class="site-header mb-1">
-        <div class="site-name-container bg-color-1">
-          <h1 class="text-white">D&D</h1>
-        </div>
-        <div class="nav-container bg-color-8">
-          <nav class="nav" id="nav">
-            <ul>
-              <li class="nav-item">
-                <a class="nav-link" id="btn-add-song">
-                  <span class="mb-1">.01</span>
-                  <span>Add Song</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="btn-delete-song">
-                  <span class="mb-1">.02</span>
-                  <span>Delete</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="ri-roll">
-                  <span class="mb-1">.03</span>
-                  <span>Click Me!</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="closeAll">
-                  <span class="mb-1">.04</span>
-                  <span>Close All</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
+    <!-- include rpgui -->
+    <link href="../RPGUI/dist/rpgui.css" rel="stylesheet" type="text/css">
+    <script src="../RPGUI/dist/rpgui.js"></script>
 
-      <section class="mb-1" id="about">
-        <div class="row about-row">
-          <div class="section-1-l" id="ytContainer">
-            <iframe
-              id="ytEmbed"
-              class="img-responsive"
-              src="https://www.youtube.com/embed/dd10InDdvJE?autoplay=1"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            >
-            </iframe>
-          </div>
-          <article class="section-1-r bg-color-8">
-            <h2 class="mb-2 title-color">Music</h2>
-            <!-- <p>
-                            <a target="_parent">Click</a>
-                            me!
-                        </p> -->
-            <div id="musicBox">
-              <!-- <a class="btn music-btn" id="battle">Battle</a>
-                        <span class="musicResponse" id="battleReply"></span> -->
+</head>
+
+<body>
+
+    <!-- all rpgui elements must be inside the rpgui-content -->
+
+
+    <div class="rpgui-content">
+        <div class="container rpgui-container framed-grey" style="min-height: 100%;">
+            <div class="header rpgui-container framed-golden-2">
+                <h1 id="title">D&D Music Player</h1>
+
+
+                <select name="profile" id="profile-selector" class="">Profil
+                    <option value="0">All Songs</option>
+                    <option value="1">First</option>
+                    <option value="2">Second</option>
+                    <option value="3">Third</option>
+
+                </select>
+                <!-- <div class="input-group">
+                    <label>Enter Url</label>
+                    <input type="text" id="ytUrl" placeholder="https://www.youtube.com/...." />
+                    <button id="submit">submit</button>
+                </div> -->
             </div>
 
-            <h2 class="mb-2 title-color">Ambience</h2>
-            <div id="ambienceBox">
-              <!-- <a class="btn ambience-btn" id="rain">Rain</a>
-              <span class="ambienceResponse bg-color-7" id="rainReply"></span> -->
+            <div class="content rpgui-container framed-golden-2">
+
+                <div class="content-half rpgui-container framed-grey" id="content-left-side">
+                    <button id="test1">test1</button>
+                    <select name="test" id="some_id">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="mercedes">Mercedes</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+
+
+                <div class="content-half rpgui-container framed-grey" id="content-right-side">
+                    <div>
+                        <button class="" id="ping">Ping</button>
+                        <span class="" id="ping-reply"></span>
+                        <button class="small-button" id="create-embed">Create New Embed</button>
+                    </div>
+                    
+
+                    
+                </div>
+
             </div>
-          </article>
         </div>
-      </section>
-      <div class="bg-color-1 mb-1 row social-row">
-        <div>
-          <label style="margin-right: 5px;"   class="text-white">Enter Url</label>
-          <button class="btn" id="submitBtn">Submit</button>
-          <input type="text" id="ytUrl" placeholder="youtube.com/..." />
-          
-            <a class="btn" id="testBtn">Test</a>
-          
-        </div>
-        
-      </div>
-      
 
-      <!-- <div class="bg-color-1 mb-1 row social-row">
-        <div class="icon">
-          <div class="icon-inner">
-            <a href="#services">
-              <i class="fas fa-synagogue fa-4x mb-1"></i>
-              <p>Aenean vel est id massa condimentum</p>
-            </a>
-          </div>
-        </div>
-        <div class="icon">
-          <div class="icon-inner">
-            <a href="#gallery">
-              <i class="fas fa-chart-bar fa-4x mb-1"></i>
-              <p>Suspendisse interdum lectus purus</p>
-            </a>
-          </div>
-        </div>
-        <div class="icon">
-          <div class="icon-inner">
-            <a href="#contact">
-              <i class="fas fa-images fa-4x mb-1"></i>
-              <p>Nulla ac sodales est vel iaculis purus</p>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div> -->
 
-      <!-- You can also require other files to run in this process -->
-      <script type="text/javascript">
-        require("../out/index.js");
-      </script>
     </div>
-  </body>
+
+
+
+
+
+
+
+
+    <!-- You can also require other files to run in this process -->
+
+
+    <script type="text/javascript">
+        require("../out/renderer.js");
+    </script>
+
+
+</body>
+
 </html>

@@ -1,0 +1,49 @@
+body {
+  background: rgb(10, 10, 43);
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.header{
+  min-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  padding: 2px;
+
+}
+
+#title{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.input-group{
+  max-width: 60vw;
+  display: flex;
+}
+
+.content{
+  display: flex;
+  justify-content: space-around;
+}
+
+
+.content-half{
+  width: 50%;
+  border: solid black 5px;
+  min-width: 335px;
+}
+
+input{
+  margin: 5px;
+}
+
+#ytContainer{
+  padding: 2px;
+  
+}
+

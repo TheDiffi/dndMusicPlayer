@@ -1,13 +1,20 @@
 import {
   extractYtIdFromLink,
-  parseYtIdToEmbedUrl,
-  playYtUrl,
+  createNewYTPlayer,
+  YTPlayer
 } from "./util/yt.util";
+import YouTubeApiEmbed from "youtube-player";
+import { ipcRenderer } from 'electron';
+
 
 // This file is required by the index.html file and will
-export { ipcRenderer, Song };
+export { ipcRenderer }; 
+
+//globals
+const ytPlayers: YTPlayer[] = new Array();
+
+
 // be executed in the renderer process for that window.
-const { ipcRenderer } = require("electron");
 console.log("Main Renderer: started");
 
 bootup();
@@ -15,29 +22,31 @@ bootup();
 //___________________BOOTUP_____________________
 
 function bootup() {
-  ipcRenderer.send("load-songs");
+  ytPlayers.push(createNewYTPlayer('content-right-side', 'VZYr1eyC81g', 'music','ytPlayer'));
+
+  // ipcRenderer.send("load-songs");
+}
+
+
+function loadSongs(songs: Songs) {
+  songs.music.forEach((elm) => {
+    generateMusicBtn(elm, "musicBox");
+  });
+  songs.ambience.forEach((elm) => {
+    generateAmbienceBtn(elm, "ambienceBox");
+  });
 }
 
 //async response for ipcRenderer.send('load-songs')
 //generates the song buttons
-ipcRenderer.on(
-  "return-songs",
-  (event: Event, songs: { music: Array<Song>; ambience: Array<Song> }) => {
-    songs.music.forEach((elm) => {
-      generateMusicBtn(elm);
-    });
-    songs.ambience.forEach((elm) => {
-      generateAmbienceBtn(elm);
-    });
-  }
-);
+ipcRenderer.on("return-songs", (event: Event, songs: Songs) => loadSongs(songs));
 
 //generate Music Button Function
-function generateMusicBtn(music: Song) {
-  let parent = document.getElementById("musicBox");
+function generateMusicBtn(music: Song, parentId: string) {
+  let parent = document.getElementById(parentId);
 
   if (!parent) {
-    throw Error("Could not generate MusicBtn: musicBox Element not found");
+    throw Error("Could not generate MusicBtn: parent Element not found");
   }
 
   //button
@@ -55,10 +64,10 @@ function generateMusicBtn(music: Song) {
 }
 
 //generate Ambience Button Function
-function generateAmbienceBtn(ambience: Song) {
-  let parent = document.getElementById("ambienceBox");
+function generateAmbienceBtn(ambience: Song, parentId: string) {
+  let parent = document.getElementById(parentId);
   if (!parent) {
-    throw Error("Could not generate MusicBtn: ambienceBox Element not found");
+    throw Error("Could not generate AmbienceBtn: parent Element not found");
   }
 
   //button
@@ -105,10 +114,21 @@ function musicButtonOnClick(button: HTMLElement) {
 function playMusicFromButton(button: HTMLElement) {
   let song: Song = ipcRenderer.sendSync("song-request", button.id, "music");
 
-  playYtUrl(parseYtIdToEmbedUrl(song.id, true, true, song.length));
-  setMusicButtonToPlaying(button);
+  if (playMusicFromYtId(button.id)) {
+    setMusicButtonToPlaying(button);
+    console.log(`Playing ${JSON.stringify(song)}`);
 
-  console.log(`Playing ${JSON.stringify(song)}`);
+  }
+}
+
+function playMusicFromYtId(ytId: string): boolean {
+  ytPlayers?.forEach((player: YTPlayer) => {
+    if (player.type === "music") {
+      player.api.loadVideoById(ytId);
+      return true;
+    }
+  });
+  return false;
 }
 
 function setMusicButtonToPlaying(btnPlaying: HTMLElement) {
@@ -185,10 +205,10 @@ ipcRenderer.on("add-song-button", (event: Event, song: Song) => {
   console.log("Adding Button...");
   switch (song.type) {
     case "music":
-      generateMusicBtn(song);
+      generateMusicBtn(song, "musicBox");
       break;
     case "ambience":
-      generateAmbienceBtn(song);
+      generateAmbienceBtn(song, "ambienceBox");
       break;
   }
 });
@@ -240,11 +260,18 @@ function deleteSongFromButton(button: HTMLElement) {
 
 //__________________OTHER EVENTS___________________
 
+const addEmbedBtn = document.getElementById('create-embed');
+
+addEmbedBtn.addEventListener('click', () => {
+  let newPlayer = createNewYTPlayer('content-right-side', 'VZYr1eyC81g', "ambience",'ytPlayer');
+  ytPlayers.push(newPlayer);
+})
+
 //close all ambience button
 const cButton = document.getElementById("closeAll");
 cButton?.addEventListener("click", () => {
-    ipcRenderer.send("ambience-close", 'closeAll');
-  
+  ipcRenderer.send("ambience-close", 'closeAll');
+
 });
 
 const submitBtn = document.getElementById("submitBtn");
@@ -252,17 +279,22 @@ submitBtn?.addEventListener("click", () => {
   const ytUrl = (<HTMLInputElement>document.getElementById('ytUrl')).value;
   console.log(ytUrl)
   if (ytUrl) {
-    playYtUrl(parseYtIdToEmbedUrl(extractYtIdFromLink(ytUrl), true, true));
+    playMusicFromYtId(extractYtIdFromLink(ytUrl));
   }
 });
 
 //----------------------------other-------------------------------
 
-interface Song {
+export interface Song {
   topic: string;
   id: string;
   length: number;
   type: string;
+}
+
+interface Songs {
+  music: Array<Song>,
+  ambience: Array<Song>
 }
 
 //____________________TESTING_________________
@@ -280,7 +312,7 @@ ipcRenderer.on("test-reply", (event: Event, arg: string) => {
 
 const sButton = document.getElementById("ri-roll");
 sButton?.addEventListener("click", () => {
-  playYtUrl("https://www.youtube.com/embed/iik25wqIuFo?autoplay=1");
+  playMusicFromYtId("iik25wqIuFo");
 });
 
 //------------ Music Buttons ------------------------

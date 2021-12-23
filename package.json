@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "electron-forge": "^5.2.4",
-    "glob": "^7.1.7"
+    "electron-reload": "^2.0.0-alpha.1",
+    "glob": "^7.1.7",
+    "youtube-player": "^5.5.2"
   }
 }

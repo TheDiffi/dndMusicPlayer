@@ -2,7 +2,7 @@ import { mainWin } from "../main";
 export {};
 
 const { BrowserWindow, ipcMain } = require("electron");
-const ambienceWindows = new Map<string, string>(/*key=pauseButtonId, value=BrowserWindowId*/);
+const ambienceWindows = new Map<string, number>(/*key=pauseButtonId, value=BrowserWindowId*/);
 const ambiencePopupFilepath = "../section/ambiencePopup.html";
 
 
@@ -30,6 +30,7 @@ ipcMain.on("ambience-close", (event: any, ambienceId: string) => {
 
     if (ambienceId === "closeAll") {
     ambienceWindows.forEach((value, key) => {
+  
         BrowserWindow.fromId(value).destroy();
     });
 
@@ -42,8 +43,8 @@ ipcMain.on("ambience-close", (event: any, ambienceId: string) => {
 
   } else {
     let win = BrowserWindow.fromId(ambienceWindows.get(ambienceId))
-    console.log("Closed Ambience Window. ID: " + win.id);
-    win.destroy();
+    console.log("Closed Ambience Window. ID: " + win?.id);
+    win?.destroy();
 
     ambienceWindows.delete(ambienceId);
 

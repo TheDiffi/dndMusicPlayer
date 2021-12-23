@@ -1,0 +1,28 @@
+{
+    "1": {
+        "name": "test",
+        "id": "1",
+        "music": [ //only lists the btn ids, button object stored elsewhere
+            "VZYr1eyC81g",
+            "XbS3tPO9sUs",
+            "lAGm9MTyRJ8"
+        ],
+        "ambience": [ //same as above
+            "sGkh1W5cbH4",
+            "q76bMs-NwRk",
+            "tXAqVCbt-1A"
+        ]
+    },
+    "2": {
+        "name": "test2",
+        "id": "2",
+        "music": [ //only lists the btn ids, button object stored elsewhere
+            "JCOJS1wWmeo",
+            "M5QY2_8704o"
+        ],
+        "ambience": [ //same as above
+            "K9FVInvtDfU",
+            "K9FVInvtDfU"
+        ]
+    }
+}

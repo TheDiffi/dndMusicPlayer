@@ -2,12 +2,13 @@
 
 import {
   extractYtIdFromLink,
-  parseYtIdToEmbedUrl,
+  parseYtIdToEmbedLink,
   playYtUrl,
 } from "../util/yt.util";
 
 // be executed in the renderer process for that window.
-export {};
+
+
 const { ipcRenderer } = require("electron");
 
 console.log("AmbienceRenderer: started");
@@ -21,7 +22,7 @@ ipcRenderer.on("play-ambience", (event: any, ambienceId: string) => {
   console.log("Got from song-request the ytId in ambience-renderer: " + song);
 
   if (song) {
-    playYtUrl(parseYtIdToEmbedUrl(song.id, true, true, 0));
+    playYtUrl(parseYtIdToEmbedLink(song.id, true, true, 0));
   }
 
   //saves the pauseButtonId

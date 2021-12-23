@@ -1,4 +1,4 @@
-import { Song } from "..";
+import { Song } from "../renderer";
 export {};
 let fs = require("fs");
 var { ipcMain } = require("electron");

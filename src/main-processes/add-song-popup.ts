@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain, mainWin } from "../main";
-import { Song } from "..";
-export{}
+import { Song } from "../renderer";
+
 
 const assSongPopupFilepath = '../section/addSongPopup.html'
 
@@ -12,7 +12,7 @@ ipcMain.on('add-song', (event: any, song: Song) => {
     mainWin.webContents.send('add-song-button', song);
 })
 
-function createAddSongWindow() {
+function createAddSongWindow() { 
     // Create the browser window.
     let win = new BrowserWindow({
         width: 270,
