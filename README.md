@@ -4,6 +4,13 @@ Unnoticed, it has a HUGE impact on the atmosphere in the room and helps to immer
 
 The Goal of this Project is simplifying playing, pausing and especially switching music down to the press of a single button. 
 
+## NEW: Now installable via executable
+I finally got around to learn how building and distributing works with elektron.
+On the right side under *releases* you can find the setup.exe of the latest version.
+Currently there is sadly no finished version, I started reworking and am not done, so many basic features don't work.
+
+
+
 ## How to use
 - download the repository and extract the files into a folder
 - make sure you have node.js installed, otherwise download it it under https://nodejs.org/en/download/
@@ -25,7 +32,7 @@ Background Music:
 - Songs loop, start automatically and at a random point in the song
 - Quickly Play any Music from YouTube by copy pasting the URL into the bar at the bottom
 
-Ambience Music:
+❌ Ambience Music:
 
 - Start/Stop a Song with a single Button
 - Play multiple Songs at the same time to create the correct atmosphere
