@@ -4,6 +4,19 @@ Unnoticed, it has a HUGE impact on the atmosphere in the room and helps to immer
 
 The Goal of this Project is simplifying playing, pausing and especially switching music down to the press of a single button. 
 
+## How to use
+- download the repository and extract the files into a folder
+- make sure you have node.js installed, otherwise download it it under https://nodejs.org/en/download/
+- open a command line in the folder where the repository is located 
+  - (follow [this tutorial](https://www.youtube.com/watch?v=bgSSJQolR0E) if you don't know how )
+- type _npm install_ 
+- you have installed it successfully!
+
+### How to launch
+- open a command terminal in the folder where the repository is located
+   - (follow [this tutorial](https://www.youtube.com/watch?v=bgSSJQolR0E) if you don't know how )
+- type _npm start_
+
 ## Features
 
 Background Music:
