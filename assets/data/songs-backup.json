@@ -1,5 +1,5 @@
 {
-    "music": [
+    "songs": [
         {
             "topic": "tavern",
             "id": "dd10InDdvJE",
@@ -53,9 +53,7 @@
             "id": "pX1qpsll2zQ",
             "length": "2",
             "type": "music"
-        }
-    ],
-    "ambience": [
+        },
         {
             "topic": "rain",
             "id": "KSSpVMIgN2Y",

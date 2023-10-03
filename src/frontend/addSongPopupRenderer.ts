@@ -1,72 +1,62 @@
 // This file is required by the index.html file and will
 
-import { IpcChannelsSend } from "src/util/enums";
+import { IpcS } from "../util/types.util";
 import { extractYtIdFromLink } from "../util/yt.util";
 
 // be executed in the renderer process for that window.
-export { };
+export {};
 const { ipcRenderer } = require("electron");
 
+console.log("addSongRenderer: started");
 
-console.log('addSongRenderer: started');
+document.getElementById("submit")?.addEventListener("click", () => {
+	if (checkInput()) {
+		//reads the user Input
+		let songTopic = (<HTMLInputElement>document.getElementById("topicInput"))?.value;
+		let songId = extractYtIdFromLink((<HTMLInputElement>document.getElementById("urlInput"))?.value);
+		let songLength = (<HTMLInputElement>document.getElementById("lengthInput"))?.value;
+		let songType = (<HTMLInputElement>document.getElementById("typeInput"))?.value;
 
-document.getElementById("submit")?.addEventListener('click', () => {
+		let song = { topic: songTopic, id: songId, length: songLength, type: songType };
 
-    if (checkInput()) {
-        //reads the user Input
-        let songTopic =  (<HTMLInputElement>document.getElementById('topicInput'))?.value;
-        let songId = extractYtIdFromLink((<HTMLInputElement>document.getElementById('urlInput'))?.value);
-        let songLength = (<HTMLInputElement>document.getElementById('lengthInput'))?.value;
-        let songType = (<HTMLInputElement>document.getElementById('typeInput'))?.value;
+		//sends the data
+		ipcRenderer.send(IpcS.addSong, song);
 
-        let song = { topic: songTopic, id: songId, length: songLength, type: songType }
-
-        //sends the data
-        ipcRenderer.send(IpcChannelsSend.addSong, song);
-
-        window.close();
-    }
-
-})
-
+		window.close();
+	}
+});
 
 function checkInput() {
-    let state = true;
+	let state = true;
 
-    //checks if there is content in each box
-    let aButtons = document.getElementsByTagName('input');
-    Array.from(aButtons, elem =>{
-        document.getElementById('errorMessage')?.setAttribute('innerHTML', "");
-        if (!elem.value) {
-            state = false
-            if (elem.className.indexOf(' error') == -1) {
-                elem.className = elem.className + ' error'
-                console.log('error:' + elem + '; ' + elem.className);
-            }
-            document.getElementById('errorMessage')?.setAttribute('innerHTML',"Please fill out all rows!");
+	//checks if there is content in each box
+	let aButtons = document.getElementsByTagName("input");
+	Array.from(aButtons, (elem) => {
+		document.getElementById("errorMessage")?.setAttribute("innerHTML", "");
+		if (!elem.value) {
+			state = false;
+			if (elem.className.indexOf(" error") == -1) {
+				elem.className = elem.className + " error";
+				console.log("error:" + elem + "; " + elem.className);
+			}
+			document.getElementById("errorMessage")?.setAttribute("innerHTML", "Please fill out all rows!");
+		} else {
+			if (elem.className.indexOf(" error") != -1) {
+				elem.className = elem.className.replace(" error", "");
+				console.log("repaired" + elem + "; " + elem.className);
+			}
+		}
+	});
 
-        } else {
-            if (elem.className.indexOf(' error') != -1) {
-                elem.className = elem.className.replace(' error', '');
-                console.log('repaired' + elem + '; ' + elem.className);
-            }
-        }
-    })
+	//checks if url is a yt link
+	let urlInput = document.getElementById("urlInput");
+	if (urlInput && urlInput.getAttribute("value") && !extractYtIdFromLink(urlInput.getAttribute("value")!)) {
+		state = false;
+		if (urlInput.className.indexOf(" error") == -1) {
+			urlInput.className = urlInput.className + " error";
+		}
+		document.getElementById("errorMessage")?.setAttribute("innerHTML", "Please enter a valid URL!");
+	}
 
-
-    //checks if url is a yt link
-    let urlInput = document.getElementById('urlInput')
-    if (urlInput && urlInput.getAttribute('value') && !extractYtIdFromLink(urlInput.getAttribute('value')!)) {
-        state = false
-        if (urlInput.className.indexOf(' error') == -1) {
-            urlInput.className = urlInput.className + ' error';
-        }
-        document.getElementById('errorMessage')?.setAttribute('innerHTML', "Please enter a valid URL!");
-    }
-
-    return state;
+	return state;
 }
-
-
-
-

@@ -5,6 +5,8 @@ import { app, BrowserWindow, Menu } from "electron";
 import { shell } from "electron/common";
 import { ipcMain } from "electron";
 import url from "url";
+import { loadSongs } from "./main-processes/data/song-handler";
+import { loadProfiles } from "./main-processes/data/profile-handler";
 
 export { BrowserWindow, ipcMain, mainWin };
 
@@ -14,7 +16,14 @@ require('electron-reload')(__dirname);
 let mainWin;
 
 function initialize() {
+	console.info("Loading Scripts...");
 	loadScripts();
+	console.info("Scripts loaded");
+	console.info("Loading Data...");
+	loadData();
+	console.info("Data loaded");
+
+	console.info("Initializing Electron...");
 
 	function createWindow() {
 		// Create the browser window.
@@ -36,6 +45,8 @@ function initialize() {
 				slashes: true,
 			})
 		);
+
+		console.log("Loading URL: " + path.join(__dirname, "../section/index.html"));
 
 		// Open the DevTools.
 		mainWindow.webContents.openDevTools();
@@ -69,8 +80,9 @@ function initialize() {
 			},
 			{ label: "Menu2" },
 		]);
-
 		Menu.setApplicationMenu(menu);
+
+		console.log("Electron initialized");
 
 		return mainWindow;
 	}
@@ -104,10 +116,19 @@ function initialize() {
 
 // Require each JS file in the main-process dir
 function loadScripts() {
-	const jsfiles = globSync("./main-processes/**/*.js", { ignore: "node_modules/**" });
+	let jsfiles = globSync("out/main-processes/**//*.js", { ignore: "node_modules/**" });
+	jsfiles = jsfiles.map((file) => {
+		return file.replace("out\\", "./");
+	});
+	console.log(jsfiles);
 	jsfiles.forEach((file) => {
 		require(file);
 	});
+}
+
+function loadData() {
+	loadSongs();
+	loadProfiles();
 }
 
 initialize();

@@ -1,37 +1,35 @@
-import { IpcChannelsSend, IpcChannelsReturn } from "src/util/enums";
+import { IpcS, IpcR, Song } from "../../util/types.util";
 import { BrowserWindow, ipcMain, mainWin } from "../../main";
-import { Song } from "../../renderer";
 
+const assSongPopupFilepath = "../section/addSongPopup.html";
 
-const assSongPopupFilepath = '../section/addSongPopup.html'
+ipcMain.on(IpcS.addSongPopup, (event: any) => {
+	const win = createAddSongWindow();
+});
 
-ipcMain.on(IpcChannelsSend.addSongPopup, (event: any) => {
-    const win = createAddSongWindow();
-})
+ipcMain.on(IpcS.addSong, (event: any, song: Song) => {
+	mainWin.webContents.send(IpcR.addSongButton, song);
+});
 
-ipcMain.on(IpcChannelsSend.addSong, (event: any, song: Song) => {
-    mainWin.webContents.send(IpcChannelsReturn.addSongButton, song);
-})
+function createAddSongWindow() {
+	// Create the browser window.
+	let win = new BrowserWindow({
+		width: 270,
+		height: 350,
+		resizable: true,
+		autoHideMenuBar: true,
+		alwaysOnTop: true,
+		webPreferences: {
+			nodeIntegration: true,
+			contextIsolation: false,
+		},
+	});
 
-function createAddSongWindow() { 
-    // Create the browser window.
-    let win = new BrowserWindow({
-        width: 270,
-        height: 350,
-        resizable: true,
-        autoHideMenuBar: true,
-        alwaysOnTop: true,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    })
+	// Open the DevTools.
+	win.webContents.openDevTools();
 
-    // Open the DevTools.
-    win.webContents.openDevTools()
+	// and load the index.html of the app.
+	win.loadFile(assSongPopupFilepath);
 
-    // and load the index.html of the app.
-    win.loadFile(assSongPopupFilepath);
-
-    return win;
+	return win;
 }

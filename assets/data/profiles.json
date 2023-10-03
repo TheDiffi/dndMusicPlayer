@@ -1,29 +1,38 @@
-[
-    {
-        "name": "test",
-        "id": "1",
-        "musicIds": [ //only lists the btn ids, button object stored elsewhere
-            "VZYr1eyC81g",
-            "XbS3tPO9sUs",
-            "lAGm9MTyRJ8"
-        ],
-        "ambienceIds": [ //same as above
-            "sGkh1W5cbH4",
-            "q76bMs-NwRk",
-            "tXAqVCbt-1A"
-        ],
-        "defaultMusic":"VZYr1eyC81g"
-    },
-    {
-        "name": "test2",
-        "id": "2",
-        "musicIds": [ //only lists the btn ids, button object stored elsewhere
-            "JCOJS1wWmeo",
-            "M5QY2_8704o"
-        ],
-        "ambienceIds": [ //same as above
-            "K9FVInvtDfU",
-            "K9FVInvtDfU"
-        ]
-    }
-]
+{
+	"profiles": [
+        {
+			"name": "allsongs",
+			"id": "0",
+			"musicIds": [],
+			"ambienceIds": [],
+			"defaultMusic": "VZYr1eyC81g"
+		},
+		{
+			"name": "test",
+			"id": "1",
+			"musicIds": [
+				"VZYr1eyC81g",
+				"XbS3tPO9sUs",
+				"lAGm9MTyRJ8"
+			],
+			"ambienceIds": [
+				"sGkh1W5cbH4",
+				"q76bMs-NwRk",
+				"tXAqVCbt-1A"
+			],
+			"defaultMusic": "VZYr1eyC81g"
+		},
+		{
+			"name": "test2",
+			"id": "2",
+			"musicIds": [
+				"JCOJS1wWmeo",
+				"M5QY2_8704o"
+			],
+			"ambienceIds": [
+				"K9FVInvtDfU",
+				"K9FVInvtDfU"
+			]
+		}
+	]
+}
