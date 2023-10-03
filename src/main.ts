@@ -53,12 +53,6 @@ function initialize() {
               shell.openExternal('https://www.youtube.com/embed/VZYr1eyC81g?autoplay=1')
             }
           },
-          {
-            label: 'Open Tavern Music',
-            click() {
-              mainWindow.webContents.send('play-url', 'https://www.youtube.com/embed/VZYr1eyC81g?autoplay=1')
-            }
-          },
 
           { type: 'separator' }, //basically empty menu point
           {

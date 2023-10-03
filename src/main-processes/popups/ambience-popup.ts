@@ -1,4 +1,4 @@
-import { mainWin } from "../main";
+import { mainWin } from "../../main";
 export {};
 
 const { BrowserWindow, ipcMain } = require("electron");
@@ -8,13 +8,13 @@ const ambiencePopupFilepath = "../section/ambiencePopup.html";
 
 
 
-ipcMain.on("ambience-request", (event: any, ambienceId: string) => {
+ipcMain.on(IpcChannelsSend.ambienceRequest, (event: any, ambienceId: string) => {
 
   const win = createAmbienceWindow();
 
   win.webContents.once("dom-ready", () => {
     //configures popup window
-    win.webContents.send("play-ambience", ambienceId);
+    win.webContents.send(IpcChannelsReturn.playAmbience, ambienceId);
 
     //registers the corresponding Button and window in the map
     ambienceWindows.set(ambienceId, win.id);
@@ -26,7 +26,7 @@ ipcMain.on("ambience-request", (event: any, ambienceId: string) => {
 
 
 //closes the window corresponding eith the btnId
-ipcMain.on("ambience-close", (event: any, ambienceId: string) => {
+ipcMain.on(IpcChannelsSend.ambienceClose, (event: any, ambienceId: string) => {
 
     if (ambienceId === "closeAll") {
     ambienceWindows.forEach((value, key) => {
@@ -39,7 +39,7 @@ ipcMain.on("ambience-close", (event: any, ambienceId: string) => {
     console.log("Closed all ambience Windows");
 
     //responds to caller
-    event.sender.send("ambience-closed", "closeAll");
+    event.sender.send(IpcChannelsReturn.ambienceClosed, "closeAll");
 
   } else {
     let win = BrowserWindow.fromId(ambienceWindows.get(ambienceId))
@@ -49,7 +49,7 @@ ipcMain.on("ambience-close", (event: any, ambienceId: string) => {
     ambienceWindows.delete(ambienceId);
 
     //responds to the caller
-    mainWin.webContents.send("ambience-closed", ambienceId);
+    mainWin.webContents.send(IpcChannelsReturn.ambienceClosed, ambienceId);
 
   }
 });

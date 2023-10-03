@@ -1,15 +1,15 @@
-import { BrowserWindow, ipcMain, mainWin } from "../main";
-import { Song } from "../renderer";
+import { BrowserWindow, ipcMain, mainWin } from "../../main";
+import { Song } from "../../renderer";
 
 
 const assSongPopupFilepath = '../section/addSongPopup.html'
 
-ipcMain.on('add-song-popup', (event: any) => {
+ipcMain.on(IpcChannelsSend.addSongPopup, (event: any) => {
     const win = createAddSongWindow();
 })
 
-ipcMain.on('add-song', (event: any, song: Song) => {
-    mainWin.webContents.send('add-song-button', song);
+ipcMain.on(IpcChannelsSend.addSong, (event: any, song: Song) => {
+    mainWin.webContents.send(IpcChannelsReturn.addSongButton, song);
 })
 
 function createAddSongWindow() { 

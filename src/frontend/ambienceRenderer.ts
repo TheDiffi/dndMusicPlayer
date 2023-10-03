@@ -17,8 +17,8 @@ var closeBtnId: string;
 
 //------------ Music Buttons ------------------------
 
-ipcRenderer.on("play-ambience", (event: any, ambienceId: string) => {
-  let song = ipcRenderer.sendSync("song-request", ambienceId, "ambience");
+ipcRenderer.on(IpcChannelsReturn.playAmbience, (event: any, ambienceId: string) => {
+  let song = ipcRenderer.sendSync(IpcChannelsSend.songRequest, ambienceId, "ambience");
   console.log("Got from song-request the ytId in ambience-renderer: " + song);
 
   if (song) {
@@ -31,5 +31,5 @@ ipcRenderer.on("play-ambience", (event: any, ambienceId: string) => {
 
 const exitBtn = document.getElementById("exitBtn");
 exitBtn?.addEventListener("click", () => {
-  ipcRenderer.send("ambience-close", closeBtnId);
+  ipcRenderer.send(IpcChannelsSend.ambienceClose, closeBtnId);
 });

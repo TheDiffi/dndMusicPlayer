@@ -1,6 +1,6 @@
 {
   "name": "dndmusicplayer",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "A tool for playing DnD Music and Ambience",
   "main": "main.js",
   "private": true,

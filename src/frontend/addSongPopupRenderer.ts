@@ -21,7 +21,7 @@ document.getElementById("submit")?.addEventListener('click', () => {
         let song = { topic: songTopic, id: songId, length: songLength, type: songType }
 
         //sends the data
-        ipcRenderer.send('add-song', song);
+        ipcRenderer.send(IpcChannelsSend.addSong, song);
 
         window.close();
     }

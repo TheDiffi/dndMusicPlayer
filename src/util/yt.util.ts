@@ -1,7 +1,7 @@
 import { Song } from "src/renderer";
 import YouTubeApiEmbed from "youtube-player";
 
-function createNewYTPlayer(parentId: string, ytId: string, typeEmbed: "music" | "ambience", parentClassName: string = 'ytPlayer'): YTPlayer {
+function createNewYTPlayer(parentId: string, ytId: string, typeEmbed: YTPlayerType, parentClassName: string = 'ytPlayer'): YTPlayer {
   var amountExistingPlayers = document.getElementById(parentId).getElementsByClassName(parentClassName).length;
   var playerId = amountExistingPlayers ? amountExistingPlayers + 1 : 1;
 
@@ -41,7 +41,7 @@ function createYTAPIEmbed(playerContainer: HTMLDivElement, ytId: string, playerI
 
   //creates the apiEmbed via YtAPI 
   let apiEmbed = YouTubeApiEmbed(embedId, {
-    height: "70",
+    height: "auto",
     width: "auto",
     videoId: ytId,
     playerVars: apiEmbedOptions,
@@ -50,7 +50,7 @@ function createYTAPIEmbed(playerContainer: HTMLDivElement, ytId: string, playerI
   return apiEmbed;
 }
 
-function generateEmbedControls(playerContainer: HTMLDivElement, ownId: number, ytapi: any, type: "music" | "ambience"): HTMLDivElement {
+function generateEmbedControls(playerContainer: HTMLDivElement, ownId: number, ytapi: any, type: YTPlayerType): HTMLDivElement {
 
   //volume slider
   let slider = document.createElement("input");
@@ -96,7 +96,7 @@ function generateEmbedControls(playerContainer: HTMLDivElement, ownId: number, y
   btns.appendChild(pauseBtn);
   btns.appendChild(randBtn);
 
-  if (type === "ambience") {
+  if (type === YTPlayerType.ambience) {
     let closeBtn = document.createElement('button');
     closeBtn.innerText = 'X';
     closeBtn.className = "close EmbedBtn";
@@ -149,14 +149,19 @@ function playExampleVid(ytapi: any): void {
 interface YTPlayer {
   song: Song
   api: any;
-  type: 'music' | 'ambience';
+  type: YTPlayerType;
   controls: HTMLDivElement;
   id: number;
   //TODO: add rest
 
 }
 
-export { createNewYTPlayer, YTPlayer }
+enum YTPlayerType{
+  music = 'music',
+  ambience = 'ambience'
+}
+
+export { createNewYTPlayer, YTPlayer, YTPlayerType }
 
 //-------------------------------------------------------------------
 function playYtUrl(url: string, appendToId: string = "ytContainer") {

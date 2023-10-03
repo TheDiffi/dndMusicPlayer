@@ -1,4 +1,4 @@
-import { Song } from "../renderer";
+import { Song } from "../../renderer";
 export {};
 let fs = require("fs");
 var { ipcMain } = require("electron");
@@ -7,25 +7,25 @@ const musicSongs = new Map(/*key=topic, value=songObj*/);
 const ambienceSongs = new Map(/*key=topic, value=songObj*/);
 const filepathSongs = "./assets/data/songs.json";
 
-ipcMain.on("load-songs", (event: any) => {
+ipcMain.on(IpcChannelsSend.getSongs, (event: any) => {
   //reads and sends the songs to the renderer
-  event.sender.send("return-songs", loadSongs());
+  event.sender.send(IpcChannelsReturn.returnSongs, loadSongs());
 });
 
-ipcMain.on("add-song", (event: any, song: Song) => {
+ipcMain.on(IpcChannelsSend.addSong, (event: any, song: Song) => {
   console.log(song + " song-request");
   appendSongToJson(song);
   loadSongs();
 });
 
 ipcMain.on(
-  "song-request",
+  IpcChannelsSend.songRequest,
   (event: any, songTopic: string, songType: string) => {
     event.returnValue = getSongFromTopicAndType(songTopic, songType);
   }
 );
 
-ipcMain.on("delete-song", (event: any, songTopic: string, songType: string) => {
+ipcMain.on(IpcChannelsSend.deleteSong, (event: any, songTopic: string, songType: string) => {
   let song = getSongFromTopicAndType(songTopic, songType);
   deleteSongFromJson(song);
   loadSongs();
@@ -117,7 +117,7 @@ function deleteSongFromJson(songToDel: Song) {
       });
     } else {
       console.warn(
-        `UNEXPECTED EVENT in src/song-handler/deleteSong(Z.96): songType is neither ambience nor music. Song Type = ${songToDel.type}`
+        `UNEXPECTED EVENT in song-handler/deleteSong(Z.96): songType is neither ambience nor music. Song Type = ${songToDel.type}`
       );
     }
   }
