@@ -1,9 +1,10 @@
 // This file is required by the index.html file and will
 
+import { IpcChannelsSend } from "src/util/enums";
 import { extractYtIdFromLink } from "../util/yt.util";
 
 // be executed in the renderer process for that window.
-export{}
+export { };
 const { ipcRenderer } = require("electron");
 
 

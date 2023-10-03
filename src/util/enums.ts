@@ -1,4 +1,4 @@
-enum IpcChannelsSend {
+export enum IpcChannelsSend {
   getProfile = "getProfile",
   getSongs = "getSongs",
   getSong = "getSong",
@@ -17,7 +17,7 @@ enum IpcChannelsSend {
   testSend = "testSend",
 }
 
-enum IpcChannelsReturn {
+export enum IpcChannelsReturn {
   returnProfile = "returnProfile",
   returnSongs = "returnSongs",
   ambienceClosed = "ambienceClosed",

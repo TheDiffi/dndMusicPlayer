@@ -1,5 +1,5 @@
+import { IpcChannelsSend, IpcChannelsReturn } from "src/util/enums";
 import { Song } from "../../renderer";
-export {};
 let fs = require("fs");
 var { ipcMain } = require("electron");
 
@@ -152,3 +152,5 @@ function writeSongsJson(content: string, path = filepathSongs) {
     console.log("Could not append to file in song-request");
   });
 }
+
+export { musicSongs, ambienceSongs };

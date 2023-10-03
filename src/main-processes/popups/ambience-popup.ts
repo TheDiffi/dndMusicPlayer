@@ -1,3 +1,4 @@
+import { IpcChannelsSend, IpcChannelsReturn } from "src/util/enums";
 import { mainWin } from "../../main";
 export {};
 

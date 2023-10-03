@@ -1,5 +1,6 @@
 // This file is required by the index.html file and will
 
+import { IpcChannelsSend, IpcChannelsReturn } from "src/util/enums";
 import {
   extractYtIdFromLink,
   parseYtIdToEmbedLink,

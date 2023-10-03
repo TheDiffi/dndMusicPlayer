@@ -1,3 +1,4 @@
+import { IpcChannelsSend, IpcChannelsReturn } from "src/util/enums";
 import { BrowserWindow, ipcMain, mainWin } from "../../main";
 import { Song } from "../../renderer";
 
