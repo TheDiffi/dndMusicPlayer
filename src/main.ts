@@ -1,16 +1,16 @@
 // Modules to control application life and create native browser window
 import path from "path";
-import glob, { globSync } from "glob";
+import { globSync } from "glob";
 import { app, BrowserWindow, Menu } from "electron";
 import { shell } from "electron/common";
 import { ipcMain } from "electron";
+import url from "url";
 
 export { BrowserWindow, ipcMain, mainWin };
 
 // Enable live reload for all the files inside your project directory
 require('electron-reload')(__dirname);
 
-const indexFilepath = "../section/index.html";
 let mainWin;
 
 function initialize() {
@@ -29,8 +29,13 @@ function initialize() {
 			},
 		});
 
-		// and load the index.html of the app.
-		mainWindow.loadFile(indexFilepath);
+		mainWindow.loadURL(
+			url.format({
+				pathname: path.join(__dirname, "../section/index.html"),
+				protocol: "file:",
+				slashes: true,
+			})
+		);
 
 		// Open the DevTools.
 		mainWindow.webContents.openDevTools();

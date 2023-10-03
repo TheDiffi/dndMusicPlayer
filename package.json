@@ -2,23 +2,43 @@
     "name": "dndmusicplayer",
     "version": "0.3.0",
     "description": "A tool for playing DnD Music and Ambience",
-    "main": "./src/main.js",
+    "main": "./out/main.js",
     "private": true,
     "scripts": {
         "build": "tsc",
         "watch": "tsc -w",
-        "start": "npm run build && electron ./out/main.js"
+        "debug": "electron ./out/main.js",
+        "start": "npm run build && electron ./out/main.js",
+        "pack": "npm run build && electron-builder --dir",
+        "dist": "npm run build && electron-builder",
+        "postinstall": "electron-builder install-app-deps"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "electron": "^26.2.4",
         "electron-reload": "^2.0.0-alpha.1",
         "glob": "^10.3.10",
         "youtube-player": "^5.6.0"
     },
     "devDependencies": {
         "@types/electron": "^1.6.10",
+        "electron-builder": "^24.6.4",
         "typescript": "^5.2.2"
-    }
+    },
+    "build": {
+		"productName": "DnD Music Player",
+		"icon": "./assets/images/app-icon.png"
+		
+	  },
+    "files": [
+		"**/*",
+		"!**/*.ts",
+		"!*.map",
+		"!package.json",
+		"!package-lock.json",
+		{
+		  "from": "../dist",
+		  "filter": ["**/*"]
+		}
+	  ]
 }
