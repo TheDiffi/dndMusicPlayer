@@ -136,9 +136,8 @@ async function togglePause(player: YouTubePlayer) {
   }
 }
 
-function playMusic(song: Song, ytPlayerMusic: YTPlayer) {
-	ytPlayerMusic.api.loadVideoById(song.id);
-  ytPlayerMusic.song = song;
+function playMusic(songId: string, ytPlayerMusic: YTPlayer) {
+	ytPlayerMusic.api.loadVideoById(songId);
   playRandomTime(ytPlayerMusic.api);
 }
 

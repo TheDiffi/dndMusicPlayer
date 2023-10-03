@@ -70,7 +70,7 @@ function renderProfile(profile: Profile) {
 	profile.songs.ambience.forEach((song: Song) => generateSongBtn(song, ambienceBtnParent!, "ambience"));
 
 	//play default
-	if (profile.defaultSong) playMusic(profile.defaultSong, ytPlayerMusic);
+	if (profile.defaultSong) playMusic(profile.defaultSong.id, ytPlayerMusic);
 }
 
 document.getElementById("profile-selector")?.addEventListener("change", () => {
@@ -137,7 +137,7 @@ function musicButtonOnClick(button: HTMLElement) {
 function playMusicFromButton(button: HTMLElement) {
 	let song: Song = ipcRenderer.sendSync(IpcS.songRequest, button.id, "music");
 
-	playMusic(button.id, ytPlayerMusic)
+	playMusic(song.id, ytPlayerMusic)
 	setMusicButtonToPlaying(button);
 	console.log(`Playing ${JSON.stringify(song)}`);
 	
@@ -284,7 +284,7 @@ submitBtn?.addEventListener("click", () => {
 	const ytUrl = (<HTMLInputElement>document.getElementById("ytUrl")).value;
 	console.log(ytUrl);
 	if (ytUrl) {
-		playMusicFromYtId(extractYtIdFromLink(ytUrl));
+		playMusic(extractYtIdFromLink(ytUrl), ytPlayerMusic);
 	}
 });
 
@@ -304,7 +304,7 @@ ipcRenderer.on(IpcR.testReply, (event: IpcRendererEvent, arg: string) => {
 
 const sButton = document.getElementById("ri-roll");
 sButton?.addEventListener("click", () => {
-	playMusicFromYtId("iik25wqIuFo");
+	playMusic("iik25wqIuFo", ytPlayerMusic);
 });
 
 
