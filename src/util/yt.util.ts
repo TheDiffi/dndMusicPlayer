@@ -14,7 +14,7 @@ function appendNewYTPlayer(
 
 	//creates the player Container
 	var playerContainer = document.createElement("div");
-	//playerContainer.className = parentClassName + " rpgui-container framed-grey";
+	playerContainer.className = parentClassName;
 	playerContainer.id = parentClassName + playerId;
 
 	parent.appendChild(playerContainer);
@@ -29,7 +29,7 @@ function appendNewYTPlayer(
 		api: apiEmbed,
 		type: type,
 		controls: controlsEmbed,
-		id: playerId,
+		playerId: playerId,
 		song: undefined,
 	};
 
@@ -140,6 +140,7 @@ function playMusic(songId: string, ytPlayerMusic: YTPlayer) {
 	ytPlayerMusic.api.loadVideoById(songId);
 	playRandomTime(ytPlayerMusic.api);
 	ytPlayerMusic.api.setVolume(50);
+	ytPlayerMusic.api.setLoop(true);
 }
 
 function closePlayer(playerContainer: HTMLDivElement) {
@@ -155,29 +156,7 @@ function playExampleVid(ytapi: YouTubePlayer): void {
 	ytapi.loadVideoById("rQryOSyfXmI");
 }
 
-interface YTPlayer {
-	song: Song | undefined;
-	api: YouTubePlayer;
-	type: "music" | "ambience";
-	controls: HTMLDivElement;
-	id: number;
-	//TODO: add rest
-}
 
-type Songtypes = "music" | "ambience";
-
-export {
-	appendNewYTPlayer as createNewYTPlayer,
-	YTPlayer,
-	Songtypes,
-	extractYtIdFromLink,
-	parseYtIdToEmbedLink,
-	createYTEmbed,
-	playYtUrl,
-	playRandomTime,
-	togglePause,
-	playMusic,
-};
 
 //-------------------------------------------------------------------
 function playYtUrl(url: string, appendToId: string = "ytContainer") {
@@ -227,3 +206,28 @@ function createYTEmbed(appendToId: string, ytUrl: string, asAudioPlayer = false)
 	const ytContainer = document.getElementById(appendToId);
 	ytContainer?.appendChild(iframe);
 }
+
+
+interface YTPlayer {
+	song: Song | undefined;
+	api: YouTubePlayer;
+	type: "music" | "ambience";
+	controls: HTMLDivElement;
+	playerId: number;
+	//TODO: add rest
+}
+
+type Songtypes = "music" | "ambience";
+
+export {
+	appendNewYTPlayer as createNewYTPlayer,
+	YTPlayer,
+	Songtypes,
+	extractYtIdFromLink,
+	parseYtIdToEmbedLink,
+	createYTEmbed,
+	playYtUrl,
+	playRandomTime,
+	togglePause,
+	playMusic,
+};

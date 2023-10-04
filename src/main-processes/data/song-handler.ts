@@ -7,7 +7,7 @@ const allAmbienceSongs = new Map<string, Song>(/*key=id, value=songObj*/);
 
 ipcMain.on(IpcS.getAllSongs, (event: any) => {
 	//reads and sends the songs to the renderer
-	event.sender.send(IpcR.returnSongs, loadSongs());
+	event.returnValue = loadSongs();
 });
 
 ipcMain.on(IpcS.addSong, (event: any, song: Song) => {

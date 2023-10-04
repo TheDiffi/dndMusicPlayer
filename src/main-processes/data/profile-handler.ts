@@ -33,6 +33,11 @@ ipcMain.on(IpcS.getProfile, (event: any, profileId: string) => {
 	event.returnValue = profile;
 });
 
+ipcMain.on(IpcS.getProfiles, (event: any) => {
+	loadProfiles();
+	event.returnValue = profiles;
+});
+
 export function loadProfiles() {
 	readProfilesJson().forEach((profile) => profiles.set(profile.id, profile));
 }

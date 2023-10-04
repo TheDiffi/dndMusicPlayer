@@ -1,5 +1,6 @@
 export enum IpcS {
 	getProfile = "getProfile",
+	getProfiles = "getProfiles",
 	getAllSongs = "getAllSongs",
 	getSong = "getSong",
 	deleteSong = "deleteSong",

@@ -19,7 +19,7 @@ const docIds = {
 // be executed in the renderer process for that window.
 console.log("Main Renderer: started");
 
-bootup();
+
 
 //___________________BOOTUP_____________________
 
@@ -338,3 +338,5 @@ for (const el of aButtons) {
         }
     });
 } */
+
+bootup();
