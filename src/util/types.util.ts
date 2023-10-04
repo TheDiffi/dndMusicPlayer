@@ -14,6 +14,9 @@ export enum IpcS {
 	testSend = "testSend",
 }
 
+
+
+
 export enum IpcR {
 	returnProfile = "returnProfile",
 	returnSongs = "returnSongs",

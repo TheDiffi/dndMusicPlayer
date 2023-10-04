@@ -1,87 +1,61 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>D&D Music Player</title>
+		<link rel="stylesheet" href="../assets/css/new/index.css" />
 
-<head>
-    <meta charset="UTF-8" />
-    <title>D&D Music Player</title>
-    <link rel="stylesheet" href="../assets/css/new/index.css" />
+		<!-- include rpgui -->
+		<link href="../RPGUI/dist/rpgui.css" rel="stylesheet" type="text/css" />
+		<script src="../RPGUI/dist/rpgui.js"></script>
+	</head>
 
-    <!-- include rpgui -->
-    <link href="../RPGUI/dist/rpgui.css" rel="stylesheet" type="text/css">
-    <script src="../RPGUI/dist/rpgui.js"></script>
+	<body>
+		<!-- all rpgui elements must be inside the rpgui-content -->
 
-</head>
+		<div class="rpgui-content">
+			<div class="container rpgui-container framed-grey" style="min-height: 100%">
+				<div class="header rpgui-container framed-golden-2">
+					<h1 id="title">D&D Music Player</h1>
 
-<body>
-
-    <!-- all rpgui elements must be inside the rpgui-content -->
-
-
-    <div class="rpgui-content">
-        <div class="container rpgui-container framed-grey" style="min-height: 100%;">
-            <div class="header rpgui-container framed-golden-2">
-                <h1 id="title">D&D Music Player</h1>
-
-
-                <select name="profile" id="profile-selector" class="">
-                    <option selected value="0">All Songs</option>
-                    <option value="1">First</option>
-                    <option value="2">Second</option>
-                    <option value="3">Third</option>
-                </select>
-                <!-- <div class="input-group">
+					<select name="profile" id="profile-selector" class="">
+						<option selected value="0">All Songs</option>
+						<option value="1">First</option>
+						<option value="2">Second</option>
+						<option value="3">Third</option>
+					</select>
+					<!-- <div class="input-group">
                     <label>Enter Url</label>
                     <input type="text" id="ytUrl" placeholder="https://www.youtube.com/...." />
                     <button id="submit">submit</button>
                 </div> -->
-            </div>
+				</div>
 
-            <div class="content rpgui-container framed-golden-2">
+				<div class="content rpgui-container framed-golden-2">
+					<div class="content-half rpgui-container framed-grey" id="content-left-side">
+						<button id="test1">test1</button>
 
-                <div class="content-half rpgui-container framed-grey" id="content-left-side">
-                    <button id="test1">test1</button>
-                    
-                    <div id="music-button-container">
+						<div id="music-button-container"></div>
+						<hr />
+						<div id="ambience-button-container"></div>
+					</div>
 
-                    </div>
-                    <hr>
-                    <div id="ambience-button-container">
+					<div class="content-half rpgui-container framed-grey" id="music-player-container">
+						<div>
+							<button class="" id="ping">Ping</button>
+							<span class="" id="ping-reply"></span>
+							<button class="small-button" id="create-embed">Create New Embed</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-                    </div>
-                </div>
-
-                <div class="content-half rpgui-container framed-grey" id="content-right-side">
-                    <div>
-                        <button class="" id="ping">Ping</button>
-                        <span class="" id="ping-reply"></span>
-                        <button class="small-button" id="create-embed">Create New Embed</button>
-                    </div>
-                    
-
-                    
-                </div>
-
-            </div>
-        </div>
-
-
-    </div>
-
-
-
-
-
-
-
-
-    <!-- You can also require other files to run in this process -->
-
-
-    <script type="text/javascript">
-        require("../out/renderer.js");
-    </script>
-
-
-</body>
-
+		<!-- You can also require other files to run in this process -->
+		<script type="text/javascript">
+			require("../out/renderer.js");
+		</script>
+		
+	</body>
+	
 </html>

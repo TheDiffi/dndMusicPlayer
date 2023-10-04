@@ -16,8 +16,9 @@ ipcMain.on(IpcS.addSong, (event: any, song: Song) => {
 	loadSongs();
 });
 
-ipcMain.on(IpcS.songRequest, (event: any, songTopic: string, songType: string) => {
-	event.returnValue = getSongFromTopicAndType(songTopic, songType);
+ipcMain.on(IpcS.songRequest, (event: any, songId: string) => {
+	let song = getSongFromId(songId);
+	event.returnValue = song;
 });
 
 ipcMain.on(IpcS.deleteSong, (event: any, songTopic: string, songType: string) => {

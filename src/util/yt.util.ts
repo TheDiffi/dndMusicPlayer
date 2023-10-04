@@ -14,7 +14,7 @@ function appendNewYTPlayer(
 
 	//creates the player Container
 	var playerContainer = document.createElement("div");
-	playerContainer.className = parentClassName + " rpgui-container framed-grey";
+	//playerContainer.className = parentClassName + " rpgui-container framed-grey";
 	playerContainer.id = parentClassName + playerId;
 
 	parent.appendChild(playerContainer);
@@ -50,7 +50,7 @@ function appendYTAPIEmbed(
 	let apiEmbedContainer = document.createElement("div");
 	let embedId = "ytEmbed" + playerId;
 	apiEmbedContainer.id = embedId;
-	apiEmbedContainer.className = "yt-embed rpgui-container framed-grey";
+	//apiEmbedContainer.className = "yt-embed rpgui-container framed-grey";
 	playerContainer.appendChild(apiEmbedContainer);
 
 	//creates the apiEmbed via YtAPI
@@ -128,17 +128,18 @@ function appendEmbedControls(
 }
 
 async function togglePause(player: YouTubePlayer) {
-  let state = await player.getPlayerState()
-  if (state == 1) {
-    player.pauseVideo();
-  } else if (state == 2 || state == 5) {
-    player.playVideo();
-  }
+	let state = await player.getPlayerState();
+	if (state == 1) {
+		player.pauseVideo();
+	} else if (state == 2 || state == 5) {
+		player.playVideo();
+	}
 }
 
 function playMusic(songId: string, ytPlayerMusic: YTPlayer) {
 	ytPlayerMusic.api.loadVideoById(songId);
-  playRandomTime(ytPlayerMusic.api);
+	playRandomTime(ytPlayerMusic.api);
+	ytPlayerMusic.api.setVolume(50);
 }
 
 function closePlayer(playerContainer: HTMLDivElement) {
@@ -146,8 +147,8 @@ function closePlayer(playerContainer: HTMLDivElement) {
 }
 
 async function playRandomTime(ytapi: YouTubePlayer) {
-	let duration = await ytapi.getDuration(); 
-  ytapi.seekTo(Math.random() * (duration - duration / 10), true);
+	let duration = await ytapi.getDuration();
+	ytapi.seekTo(Math.random() * (duration - duration / 10), true);
 }
 
 function playExampleVid(ytapi: YouTubePlayer): void {
@@ -165,7 +166,18 @@ interface YTPlayer {
 
 type Songtypes = "music" | "ambience";
 
-export { appendNewYTPlayer as createNewYTPlayer, YTPlayer, Songtypes, extractYtIdFromLink, parseYtIdToEmbedLink, createYTEmbed, playYtUrl, playRandomTime, togglePause, playMusic };
+export {
+	appendNewYTPlayer as createNewYTPlayer,
+	YTPlayer,
+	Songtypes,
+	extractYtIdFromLink,
+	parseYtIdToEmbedLink,
+	createYTEmbed,
+	playYtUrl,
+	playRandomTime,
+	togglePause,
+	playMusic,
+};
 
 //-------------------------------------------------------------------
 function playYtUrl(url: string, appendToId: string = "ytContainer") {
@@ -215,5 +227,3 @@ function createYTEmbed(appendToId: string, ytUrl: string, asAudioPlayer = false)
 	const ytContainer = document.getElementById(appendToId);
 	ytContainer?.appendChild(iframe);
 }
-
-

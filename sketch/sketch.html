@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html
+	data-wf-domain="dnd-music-player.webflow.io"
+	data-wf-page="651d60a4fcecef4c8cba63a3"
+	data-wf-site="651d60a4fcecef4c8cba63a0"
+	class="w-mod-js"
+>
+	<head>
+		<meta charset="utf-8" />
+		<title>DnD Music Player</title>
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<meta content="Webflow" name="generator" />
+		<link href="css/sketch.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body class="body">
+		<div class="navbar-logo-left">
+			<div
+				data-animation="default"
+				data-collapse="medium"
+				data-duration="400"
+				data-easing="ease"
+				data-easing2="ease"
+				role="banner"
+				class="navbar-logo-left-container shadow-three w-nav"
+			>
+				<div class="navbar-container">
+					<div class="navbar-wrapper">
+						<a href="#" class="navbar-brand w-nav-brand"
+							><img
+								src="images/651d71203338b1183c6e0307_651c1d725d701bdd4002b06f-aiicon.png"
+								loading="lazy"
+								width="50"
+								height="50"
+								alt=""
+								srcset="
+									images/651d71203338b1183c6e0307_651c1d725d701bdd4002b06f-aiicon-p-500.png 500w,
+									images/651d71203338b1183c6e0307_651c1d725d701bdd4002b06f-aiicon.png       512w
+								"
+								sizes="50px"
+								class="image logo"
+						/></a>
+						<nav role="navigation" class="nav-menu-wrapper w-nav-menu">
+							<ul role="list" class="nav-menu w-list-unstyled">
+								<li class="nav-menu-item"><a href="#" class="nav-link">Add Song</a></li>
+								<li class="nav-menu-item"><div class="nav-divider"></div></li>
+								<li class="nav-menu-item">
+									<div data-hover="false" data-delay="0" class="nav-dropdown w-dropdown">
+										<div class="nav-dropdown-toggle w-dropdown-toggle">
+											<!-- <div class="nav-dropdown-icon w-icon-dropdown-toggle"></div> -->
+											<!-- <div>Profiles</div> -->
+											<span><b>Profile:</b></span>
+											<select
+												name="profile"
+												id="profile-selector"
+												class="nav-dropdown-toggle dropdown-simple"
+											>
+												<option selected class="w-dropdown-list" selected value="0">
+													<b>Profiles</b>
+												</option>
+												<option value="1">First</option>
+												<option value="2">Second</option>
+												<option value="3">Third</option>
+											</select>
+										</div>
+										<nav class="nav-dropdown-list shadow-three mobile-shadow-hide w-dropdown-list">
+											<a href="#" class="nav-dropdown-link w-dropdown-link">Resource Link 1</a
+											><a href="#" class="nav-dropdown-link w-dropdown-link">Resource Link 2</a
+											><a href="#" class="nav-dropdown-link w-dropdown-link">Resource Link 3</a>
+										</nav>
+									</div>
+								</li>
+								<li><a href="#" class="nav-link-accent">All Songs</a></li>
+								<li class="nav-menu-item"><a href="#" id="ping" class="button-primary w-button">Test</a></li>
+							</ul>
+						</nav>
+						<div class="menu-button w-nav-button"><div class="w-icon-nav-menu"></div></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="w-layout-grid main-grid">
+			<div id="scene-container" class="button-container">
+				<div id="scene-wrapper" class="w-layout-hflex song-btn-flex">
+					<a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a>
+				</div>
+				<a href="#" class="add-btn w-button">+</a>
+			</div>
+			<div id="player-container" class="player-container">
+				<div class="div-block-8">
+					<div id="music-player-container" class="div-block-5">
+						<div>
+							<h1>Player</h1>
+						</div>
+					</div>
+					<div class="div-100w">
+						<div class="nav-divider"></div>
+						<div class="input-group-wrapper">
+							<label>Ambience Controller</label>
+
+							<div id="ambience-contoller" class="controls-row">
+								<a href="#" class="button w-button">Stop All</a>
+								<a href="#" class="button w-button">X</a>
+								<a href="#" class="button w-button">X</a>
+								<a href="#" class="button w-button">X</a>
+							</div>
+						</div>
+					</div>
+					<div id="ambience-player-container" class="div-block-7">
+						<div class="w-layout-vflex flex-block">
+							<div class="ambience-player">
+								<div class="w-layout-hflex flex-block-2">
+									<a href="#" class="button w-button">Play</a>
+									<div class="text-block ab-player-title">Title</div>
+									<a href="#" class="button ab-player-btn w-button">X</a>
+								</div>
+							</div>
+							<div class="ambience-player">
+								<div class="w-layout-hflex flex-block-2">
+									<a href="#" class="button w-button">Play</a>
+									<div class="text-block ab-player-title">Title</div>
+									<a href="#" class="button ab-player-btn w-button">X</a>
+								</div>
+							</div>
+							<div class="ambience-player">
+								<div class="w-layout-hflex flex-block-2">
+									<a href="#" class="button w-button">Play</a>
+									<div class="text-block ab-player-title">Title</div>
+									<a href="#" class="button ab-player-btn w-button">X</a>
+								</div>
+							</div>
+							<div class="ambience-player">
+								<div class="w-layout-hflex flex-block-2">
+									<a href="#" class="button w-button">Play</a>
+									<div class="text-block ab-player-title">Title</div>
+									<a href="#" class="button ab-player-btn w-button">X</a>
+								</div>
+							</div>
+							<div class="ambience-player">
+								<div class="w-layout-hflex flex-block-2">
+									<a href="#" class="button w-button">Play</a>
+									<div class="text-block ab-player-title">Title</div>
+									<a href="#" class="button ab-player-btn w-button">X</a>
+								</div>
+							</div>
+							<div class="ambience-player">
+								<div class="w-layout-hflex flex-block-2">
+									<a href="#" class="button w-button">Play</a>
+									<div class="text-block ab-player-title">Title</div>
+									<a href="#" class="button ab-player-btn w-button">X</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="quick-player-container" class="div-100w">
+						<div class="nav-divider"></div>
+						<div class="input-group-wrapper">
+							<label>Quickplay</label>
+							<div class="input-group">
+								<input
+									type="text"
+									class="w-input"
+									id="quickplay-input"
+									placeholder="https://www.youtube.com/...."
+								/>
+								<button id="submit" class="w-input button-simple">Enter</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="music-container" class="button-container">
+				<div id="music-button-container" class="w-layout-hflex song-btn-flex">
+					<a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a>
+				</div>
+				<a href="#" class="add-btn w-button">+</a>
+			</div>
+			<div id="ambience-container" class="button-container">
+				<div id="ambience-button-container" class="w-layout-hflex song-btn-flex">
+					<a href="#" class="song-btn w-button">Button Text</a
+					><a href="#" class="song-btn w-button">Button Text</a>
+				</div>
+				<a href="#" class="add-btn w-button">+</a>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		require("../out/sketch/renderer-sketch.js");
+	</script>
+</html>

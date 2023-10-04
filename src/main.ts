@@ -12,7 +12,7 @@ export { BrowserWindow, ipcMain, mainWin };
 
 // Enable live reload for all the files inside your project directory
 require('electron-reload')(__dirname);
-
+const indexPath = path.join(__dirname, "../sketch/sketch.html");
 let mainWin;
 
 function initialize() {
@@ -40,13 +40,13 @@ function initialize() {
 
 		mainWindow.loadURL(
 			url.format({
-				pathname: path.join(__dirname, "../section/index.html"),
+				pathname: indexPath,
 				protocol: "file:",
 				slashes: true,
 			})
 		);
 
-		console.log("Loading URL: " + path.join(__dirname, "../section/index.html"));
+		console.log("Loading URL: " + indexPath);
 
 		// Open the DevTools.
 		mainWindow.webContents.openDevTools();

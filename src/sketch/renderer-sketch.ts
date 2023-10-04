@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import { IpcRendererEvent } from "electron/renderer";
-import { IpcR, IpcS, Profile, Song } from "./util/types.util";
-import { createNewYTPlayer, extractYtIdFromLink, playMusic, YTPlayer } from "./util/yt.util";
+import { IpcR, IpcS, Profile, Song } from "../util/types.util";
+import { createNewYTPlayer, extractYtIdFromLink, playMusic, YTPlayer } from "../util/yt.util";
 
 // This file is required by the index.html file and will
 export { ipcRenderer };
