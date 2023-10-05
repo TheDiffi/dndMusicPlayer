@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import { IpcRendererEvent } from "electron/renderer";
 import { IpcR, IpcS, Profile, Song } from "./util/types.util";
-import { createNewYTPlayer, extractYtIdFromLink, playMusic, YTPlayer } from "./util/yt.util";
+import { appendAmbiencePlayerPopup, appendMusicPlayer, extractYtIdFromLink, playMusic, YTPlayer } from "./util/yt.util";
 
 // This file is required by the index.html file and will
 export { ipcRenderer };
@@ -29,11 +29,9 @@ function bootup() {
 	if (!container) {
 		throw Error("Could not find container");
 	}
-	ytPlayerMusic = createNewYTPlayer(
+	ytPlayerMusic = appendMusicPlayer(
 		container,
 		"VZYr1eyC81g",
-		"ytPlayer",
-		"music"
 	);
 	loadProfile((document.getElementById("profile-selector") as HTMLInputElement).value);
 	//loadSongs()
@@ -269,7 +267,7 @@ function deleteSongFromButton(button: HTMLElement) {
 const addEmbedBtn = document.getElementById("create-embed");
 
 addEmbedBtn?.addEventListener("click", () => {
-	let newPlayer = createNewYTPlayer(document.getElementById("music-player-container")!, "VZYr1eyC81g",  "ytPlayer", "ambience",);
+	let newPlayer = appendAmbiencePlayerPopup(document.getElementById("music-player-container")!, "VZYr1eyC81g");
 	ytPlayersAmb.push(newPlayer);
 });
 

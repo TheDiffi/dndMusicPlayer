@@ -57,9 +57,6 @@
 												<option selected class="w-dropdown-list" selected value="0">
 													<b>Profiles</b>
 												</option>
-												<option value="1">First</option>
-												<option value="2">Second</option>
-												<option value="3">Third</option>
 											</select>
 										</div>
 										<nav class="nav-dropdown-list shadow-three mobile-shadow-hide w-dropdown-list">
@@ -69,7 +66,7 @@
 										</nav>
 									</div>
 								</li>
-								<li><a href="#" class="nav-link-accent">All Songs</a></li>
+								<li><a id="all-songs-btn" class="nav-link-accent">All Songs</a></li>
 								<li class="nav-menu-item">
 									<a href="#" id="ping" class="button-primary w-button">Test</a>
 								</li>
@@ -83,12 +80,7 @@
 		<div class="w-layout-grid main-grid">
 			<div id="scene-container" class="button-container">
 				<div id="scene-button-container" class="w-layout-hflex song-btn-flex">
-					<a  class="song-btn w-button">Button Text</a
-					><a  class="song-btn w-button">Button Text</a
-					><a  class="song-btn w-button">Button Text</a
-					>
-					<a class="btn music-btn" id="0qcsdctvhTM" function="play">Field</a>
-					<a  class="song-btn w-button">Button Text</a> <button>test</button><button>test</button>
+					<a class="song-btn w-button">Button Text</a>
 				</div>
 				<a href="#" class="add-btn w-button">+</a>
 			</div>
@@ -100,7 +92,7 @@
 					<div class="div-100w">
 						<div class="nav-divider"></div>
 						<div class="input-group-wrapper">
-							<label>Ambience Controller</label>
+							<!-- <label>Ambience Controller</label> -->
 
 							<div id="ambience-contoller" class="controls-row">
 								<a href="#" class="button w-button">Stop All</a>
@@ -110,33 +102,19 @@
 							</div>
 						</div>
 					</div>
-					<div id="ambience-player-container" class="div-block-7">
-						<div class="w-layout-vflex flex-block">
-							<div class="ambience-player">
+					<div id="ambience-player-wrapper" class="div-block-7">
+						<div id="ambience-player-container" class="w-layout-vflex flex-block">
+							<!-- <div class="ambience-player">
 								<div class="w-layout-hflex flex-block-2">
-									<a href="#" class="button w-button ab-player-btn ab-player-play">Play</a>
+									<a class="button w-button ab-player-btn ab-player-play">Play</a>
 									<div class="text-block ab-player-title">Title</div>
-									<a href="#" class="button ab-player-btn ab-player-close w-button">X</a>
+									<a class="button ab-player-btn ab-player-close w-button">X</a>
 								</div>
-							</div><div class="ambience-player">
-								<div class="w-layout-hflex flex-block-2">
-									<a href="#" class="button w-button ab-player-btn ab-player-play">Play</a>
-									<div class="text-block ab-player-title">Title</div>
-									<a href="#" class="button ab-player-btn ab-player-close w-button">X</a>
+								<div class="ambience-vol-container">
+									<input class="volume-slider" type="range" min:0 max:100 value:50 />
 								</div>
-							</div><div class="ambience-player">
-								<div class="w-layout-hflex flex-block-2">
-									<a href="#" class="button w-button ab-player-btn ab-player-play">Play</a>
-									<div class="text-block ab-player-title">Title</div>
-									<a href="#" class="button ab-player-btn ab-player-close w-button">X</a>
-								</div>
-							</div><div class="ambience-player">
-								<div class="w-layout-hflex flex-block-2">
-									<a href="#" class="button w-button ab-player-btn ab-player-play">Play</a>
-									<div class="text-block ab-player-title">Title</div>
-									<a href="#" class="button ab-player-btn ab-player-close w-button">X</a>
-								</div>
-							</div>
+							</div> -->
+							<div class="ambience-player" style="display:none;"></div>
 						</div>
 					</div>
 					<div id="quick-player-container" class="div-100w">
@@ -158,23 +136,13 @@
 			</div>
 			<div id="music-container" class="button-container">
 				<div id="music-button-container" class="w-layout-hflex song-btn-flex">
-					<a href="#" class="song-btn w-button">Button Text</a
-					><a href="#" class="song-btn w-button">Button Text</a
-					><a href="#" class="song-btn w-button">Button Text</a
-					><a href="#" class="song-btn w-button">Button Text</a>
-					<a href="#" class="song-btn w-button">Button Text</a>
-					<a href="#" class="song-btn w-button">Button Text</a>
-					<a href="#" class="song-btn w-button">Button Text</a>
-					<a href="#" class="song-btn w-button">Button Text</a>
 					<a href="#" class="song-btn w-button">Button Text</a>
 				</div>
 				<a href="#" class="add-btn w-button">+</a>
 			</div>
 			<div id="ambience-container" class="button-container">
 				<div id="ambience-button-container" class="w-layout-hflex song-btn-flex">
-					<a href="#" class="song-btn w-button">Button Text</a
-					><a href="#" class="song-btn w-button">Button Text</a>
-					<a class="btn ambience-btn" id="KSSpVMIgN2Y" function="play">Rain</a>
+					<a href="#" class="song-btn w-button">Button Text</a>
 				</div>
 				<a href="#" class="add-btn w-button">+</a>
 			</div>

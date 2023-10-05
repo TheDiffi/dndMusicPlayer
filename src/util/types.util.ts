@@ -31,6 +31,7 @@ export interface Song {
 	topic: string;
 	id: string;
 	length: number;
+	volume: number | undefined;
 	type: "music" | "ambience";
 }
 
@@ -43,5 +44,13 @@ export interface Profile {
 	name: string;
 	id: string;
 	songs: Songs;
+	scenes: Scene[] | undefined;
 	defaultSong?: Song;
+}
+
+export type Scene = {
+	name: string;
+	id: string;
+	music: Song;
+	ambience: Song[];
 }

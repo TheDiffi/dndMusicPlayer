@@ -148,7 +148,7 @@ button {
   animation: ease 0.3s;
   text-decoration: none;
 
-  margin: 2px;
+
 }
 
 button:hover {
@@ -895,7 +895,7 @@ textarea.w-select {
   display: none !important;
 }
 
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 479px) {
   .w-container {
     max-width: 728px;
   }
@@ -963,7 +963,19 @@ textarea.w-select {
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 660px) {
+  .navbar-brand{
+    display: none !important;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .navbar-brand{
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 479px) {
 
   .w-hidden-main,
   .w-hidden-medium {
@@ -1538,7 +1550,7 @@ textarea.w-select {
   outline: 0;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 479px) {
   .w-nav-brand {
     padding-left: 10px;
   }
@@ -1780,7 +1792,7 @@ textarea.w-select {
   overflow: hidden;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 479px) {
   .w-lightbox-content {
     height: 96vh;
     margin-top: 2vh;
@@ -2105,7 +2117,7 @@ textarea.w-select {
   position: static;
 }
 
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 479px) {
   .w-nav[data-collapse="medium"] .w-nav-menu {
     display: none;
   }
@@ -2115,7 +2127,7 @@ textarea.w-select {
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 479px) {
   .w-nav[data-collapse="small"] .w-nav-menu {
     display: none;
   }
@@ -2459,7 +2471,7 @@ textarea.w-select {
     ". Area";
   margin-left: 10px;
   margin-right: 10px;
-  overflow: scroll;
+  overflow:hidden;
 }
 
 .div-block-2,
@@ -2506,6 +2518,7 @@ textarea.w-select {
   margin-top: 2px;
   margin-bottom: 2px;
   display: block;
+  min-width: 160px;
 }
 
 .button {
@@ -2562,6 +2575,7 @@ textarea.w-select {
 .div-block-7 {
   display: block;
   overflow: hidden;
+  width: 100%;
 }
 
 .div-block-8 {
@@ -2597,14 +2611,14 @@ textarea.w-select {
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  
+  overflow-y: auto;
 }
 
 .image {
   border-radius: 20px;
 }
 
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 479px) {
   .navbar-container {
     max-width: 728px;
   }
@@ -2648,7 +2662,7 @@ textarea.w-select {
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 479px) {
   .navbar-logo-left-container {
     max-width: 100%;
   }
@@ -2788,4 +2802,18 @@ textarea.w-select {
 
 .w-button:hover {
   filter: brightness(1.1);
+}
+
+.ambience-vol-container{
+  text-align: center;
+  margin-top: 6px;
+}
+
+#music-player-container{
+  text-align: center;
+  margin-top: 6px;
+}
+
+#all-songs-btn{
+  cursor: pointer;
 }

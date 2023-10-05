@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Song, Profile, Songs } from "../../util/types.util";
+import { Song, Profile, Songs, Scene } from "../../util/types.util";
 import { getSongFromId } from "./song-handler";
 
 const dataPaths = {
@@ -14,6 +14,7 @@ type ProfileJson = {
 	id: string;
 	musicIds: string[];
 	ambienceIds: string[];
+	scenes: Scene[] | undefined;
 	defaultMusic: string;
 };
 type ProfilesJson = { profiles: ProfileJson[] } | undefined;
@@ -79,7 +80,7 @@ function parseJsonToProfile(data: ProfileJson): Profile {
 		music: data.musicIds.map((id) => getSongFromId(id)).filter((song) => song !== undefined) as Song[], 
 		ambience: data.ambienceIds.map((id) => getSongFromId(id)).filter((song) => song !== undefined) as Song[],
 	};
-	return { name: data.name, id: data.id, songs: songs, defaultSong: defaultMusic };
+	return { name: data.name, id: data.id, songs: songs, defaultSong: defaultMusic, scenes: data.scenes};
 }
 
 function parseProfileToJson(profile: Profile): ProfileJson {
@@ -88,6 +89,7 @@ function parseProfileToJson(profile: Profile): ProfileJson {
 		id: profile.id,
 		musicIds: profile.songs.music.map((song) => song.id),
 		ambienceIds: profile.songs.ambience.map((song) => song.id),
+		scenes: profile.scenes,
 		defaultMusic: profile.defaultSong?.id ?? profile.songs.music[0].id,
 	};
 }

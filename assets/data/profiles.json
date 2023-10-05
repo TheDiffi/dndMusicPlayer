@@ -1,38 +1,49 @@
 {
 	"profiles": [
-        {
-			"name": "allsongs",
-			"id": "0",
-			"musicIds": [],
-			"ambienceIds": [],
-			"defaultMusic": "VZYr1eyC81g"
-		},
 		{
-			"name": "test",
+			"name": "overworld",
 			"id": "1",
 			"musicIds": [
+				"dd10InDdvJE",
 				"VZYr1eyC81g",
-				"XbS3tPO9sUs",
-				"lAGm9MTyRJ8"
+				"Wd3kd0zY2bQ",
+				"0qcsdctvhTM"
 			],
 			"ambienceIds": [
-				"sGkh1W5cbH4",
-				"q76bMs-NwRk",
-				"tXAqVCbt-1A"
+				"EULoybB2Nsw",
+				"KSSpVMIgN2Y",
+				"sGkh1W5cbH4"
+				
 			],
 			"defaultMusic": "VZYr1eyC81g"
 		},
 		{
-			"name": "test2",
+			"name": "spooky",
 			"id": "2",
 			"musicIds": [
-				"JCOJS1wWmeo",
-				"M5QY2_8704o"
+				"kn4Qc3B7L_o",
+				"YRqnZ_6MAHg"
 			],
 			"ambienceIds": [
-				"K9FVInvtDfU",
-				"K9FVInvtDfU"
-			]
+				"KSSpVMIgN2Y",
+				"sGkh1W5cbH4",
+				"PpC3mSaIX_o"
+			],
+			"defaultMusic": "kn4Qc3B7L_o"
+		},
+		{
+			"name": "fight",
+			"id": "3",
+			"musicIds": [
+				"lAGm9MTyRJ8",
+				"Wd3kd0zY2bQ"
+			],
+			"ambienceIds": [
+				"oBsHWwmXbcM",
+				"KSSpVMIgN2Y",
+				"sGkh1W5cbH4"
+			],
+			"defaultMusic":"lAGm9MTyRJ8"
 		}
 	]
 }

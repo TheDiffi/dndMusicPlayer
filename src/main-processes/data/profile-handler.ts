@@ -7,6 +7,7 @@ const profiles: Map<string, Profile> = new Map();
 ipcMain.on(IpcS.getProfile, (event: any, profileId: string) => {
     console.info("getProfile: " + profileId);
 
+	if(profileId === "0") return getAllSongsProfile();
 	//tries if the profile is already loaded
 	let profile = profiles.get(profileId);
 	//if not, it reads the profiles.json and loads the profile and tries again
@@ -20,18 +21,25 @@ ipcMain.on(IpcS.getProfile, (event: any, profileId: string) => {
         return;
     }
 
-	// AllSongs Profile
-	if (profile.id === "0") {
-		let songs = readSongsJson();
-		songs.forEach((song: Song) => {
-			profile?.songs[song.type].push(song);
-		});
-	}
-
     console.info("returning profile: " + profile?.name);
 
 	event.returnValue = profile;
 });
+
+function getAllSongsProfile(){
+	const songs = readSongsJson();
+	const profile: Profile = {
+		name: "All Songs",
+		id: "0",
+		songs: {
+			music: songs.filter((song) => song.type === "music"),
+			ambience: songs.filter((song) => song.type === "ambience"),
+		},
+		scenes: undefined,
+		defaultSong: undefined,
+	};
+	return profile;
+}
 
 ipcMain.on(IpcS.getProfiles, (event: any) => {
 	loadProfiles();

@@ -2,27 +2,24 @@ import YouTubeApiEmbed from "youtube-player";
 import { YouTubePlayer } from "youtube-player/dist/types";
 import { Song } from "./types.util";
 
-function appendNewYTPlayer(
-	parent: HTMLElement,
-	ytId: string,
-	parentClassName: string = "ytPlayer",
-	type: Songtypes
-): YTPlayer {
-	//gets the amount of existing players and creates the new id
-	var amountExistingPlayers = parent.getElementsByClassName(parentClassName).length;
+function appendMusicPlayer(parent: HTMLElement, ytId: string): YTPlayer {
+	const type = "music";
+	const playerContainerClassName: string = "ytPlayer";
+	//creates the new id
+	var amountExistingPlayers = parent.getElementsByClassName(playerContainerClassName).length;
 	var playerId = amountExistingPlayers ? amountExistingPlayers + 1 : 1;
 
 	//creates the player Container
 	var playerContainer = document.createElement("div");
-	playerContainer.className = parentClassName;
-	playerContainer.id = parentClassName + playerId;
+	playerContainer.className = playerContainerClassName;
+	playerContainer.id = playerContainerClassName + playerId;
 
 	parent.appendChild(playerContainer);
 
 	//creates the apiEmbed
-	let apiEmbed = appendYTAPIEmbed(playerContainer, ytId, playerId);
+	let apiEmbed = appendYTEmbed(playerContainer, ytId, playerId);
 	//player controls
-	let controlsEmbed = appendEmbedControls(playerContainer, playerId, apiEmbed, type);
+	let controlsEmbed = appendMusicEmbedControls(playerContainer, playerId, apiEmbed, type);
 
 	// creates the new player
 	let newPlayer: YTPlayer = {
@@ -36,35 +33,72 @@ function appendNewYTPlayer(
 	return newPlayer;
 }
 
-function appendYTAPIEmbed(
+function appendAmbiencePlayerPopup(parent: HTMLElement, ytId: string): YTPlayer {
+	const type = "ambience";
+	const parentClassName: string = "ytPlayer";
+	//creates the new id
+	var amountExistingPlayers = parent.getElementsByClassName(parentClassName).length;
+	var playerId = amountExistingPlayers ? amountExistingPlayers + 1 : 1;
+
+	//creates the player Container
+	var playerContainer = document.createElement("div");
+	playerContainer.className = parentClassName;
+	playerContainer.id = parentClassName + playerId;
+
+	parent.appendChild(playerContainer);
+
+	//creates the apiEmbed
+	let apiEmbed = appendYTEmbed(playerContainer, ytId, playerId);
+	//player controls
+	let controlsEmbed = appendMusicEmbedControls(playerContainer, playerId, apiEmbed, type);
+
+	// creates the new player
+	let newPlayer: YTPlayer = {
+		api: apiEmbed,
+		type: type,
+		controls: controlsEmbed,
+		playerId: playerId,
+		song: undefined,
+	};
+
+	return newPlayer;
+}
+
+function appendYTEmbed(
 	playerContainer: HTMLDivElement,
 	ytId: string,
 	playerId: number,
 	apiEmbedOptions: { autoplay: 0 | 1; loop: 0 | 1; color?: "red" | "white" } = {
 		autoplay: 0,
-		loop: 0,
+		loop: 1,
 		color: "white",
-	}
-) {
+	},
+	playerOptions: { hidden: boolean; height: string; width: string } = { hidden: false, height: "auto", width: "auto" }
+): YouTubePlayer {
 	//creates the embed container
-	let apiEmbedContainer = document.createElement("div");
-	let embedId = "ytEmbed" + playerId;
+	const apiEmbedContainer = document.createElement("div");
+	const embedId = "ytEmbed" + playerId;
 	apiEmbedContainer.id = embedId;
+	
 	//apiEmbedContainer.className = "yt-embed rpgui-container framed-grey";
 	playerContainer.appendChild(apiEmbedContainer);
 
 	//creates the apiEmbed via YtAPI
-	let apiEmbed = YouTubeApiEmbed(embedId, {
+	const apiEmbed = YouTubeApiEmbed(embedId, {
 		height: "auto",
 		width: "auto",
 		videoId: ytId,
 		playerVars: apiEmbedOptions,
 	});
 
+	if(!apiEmbed) throw Error("apiEmbed is undefined");
+
+	if (playerOptions.hidden) apiEmbedContainer.style.display = "none";
+
 	return apiEmbed;
 }
 
-function appendEmbedControls(
+function appendMusicEmbedControls(
 	playerContainer: HTMLDivElement,
 	ownId: number,
 	ytapi: YouTubePlayer,
@@ -77,6 +111,7 @@ function appendEmbedControls(
 	for (let i = 0; i < attr.length; i += 2) {
 		slider.setAttribute(attr[i], attr[i + 1]);
 	}
+	ytapi.setVolume(slider.valueAsNumber);
 	slider.addEventListener("change", () => {
 		ytapi.setVolume(slider.valueAsNumber);
 	});
@@ -90,12 +125,12 @@ function appendEmbedControls(
 
 	//Buttons
 	let pauseBtn = document.createElement("button");
-	pauseBtn.innerText = ">||";
+	pauseBtn.innerText = "⏯️";
 	pauseBtn.className = "pause EmbedBtn";
 	pauseBtn.addEventListener("click", () => togglePause(ytapi));
 
 	let randBtn = document.createElement("button");
-	randBtn.innerText = "rand";
+	randBtn.innerText = "🔀";
 	randBtn.className = "rand EmbedBtn";
 	randBtn.addEventListener("click", () => playRandomTime(ytapi));
 
@@ -127,13 +162,48 @@ function appendEmbedControls(
 	return container;
 }
 
-async function togglePause(player: YouTubePlayer) {
+function appendAmbiencePlayer(parent: HTMLElement, song: Song): YTPlayer {
+	const type = "ambience";
+	const parentClassName = "ambience-player";
+
+	var amountExistingPlayers = parent.getElementsByClassName(parentClassName)?.length ?? 0;
+	var playerId = amountExistingPlayers ? amountExistingPlayers + 1 : 1;
+
+	//generates and append the player element
+	const playerElement = generateAmbiencePlayerElement(playerId, song);
+	parent.appendChild(playerElement);
+
+	let apiEmbed = appendYTEmbed(
+		playerElement,
+		song.id,
+		playerId,
+		{ autoplay: 1, loop: 1 },
+		{ hidden: true, height: "auto", width: "auto" }
+	);
+
+	//player controls
+	activateAmbiencePlayerControls(playerElement, apiEmbed );
+
+	// creates the new player
+	let newPlayer: YTPlayer = {
+		api: apiEmbed,
+		type: type,
+		controls: playerElement,
+		playerId: playerId,
+		song: undefined,
+	};
+
+	return newPlayer;
+}
+
+async function togglePause(player: YouTubePlayer): Promise<number> {
 	let state = await player.getPlayerState();
 	if (state == 1) {
 		player.pauseVideo();
 	} else if (state == 2 || state == 5) {
 		player.playVideo();
 	}
+	return state as number;
 }
 
 function playMusic(songId: string, ytPlayerMusic: YTPlayer) {
@@ -156,9 +226,6 @@ function playExampleVid(ytapi: YouTubePlayer): void {
 	ytapi.loadVideoById("rQryOSyfXmI");
 }
 
-
-
-//-------------------------------------------------------------------
 function playYtUrl(url: string, appendToId: string = "ytContainer") {
 	if (null === document.getElementById("ytEmbed")) {
 		createYTEmbed(appendToId, url);
@@ -207,7 +274,6 @@ function createYTEmbed(appendToId: string, ytUrl: string, asAudioPlayer = false)
 	ytContainer?.appendChild(iframe);
 }
 
-
 interface YTPlayer {
 	song: Song | undefined;
 	api: YouTubePlayer;
@@ -219,8 +285,108 @@ interface YTPlayer {
 
 type Songtypes = "music" | "ambience";
 
+
+function generateAmbiencePlayerElement(id: number, song: Song): HTMLDivElement {
+	/* 
+	<div class="ambience-player">
+		<div class="w-layout-hflex flex-block-2">
+			<a class="button w-button ab-player-btn ab-player-play">Play</a>
+			<div class="text-block ab-player-title">Title</div>
+			<a class="button ab-player-btn ab-player-close w-button">X</a>
+		</div>
+	</div> 
+	*/
+
+	const player = document.createElement("div");
+	player.className = "ambience-player";
+	player.id = id + "$ambience-player";
+	const flex = document.createElement("div");
+	flex.className = "w-layout-hflex flex-block-2 ambience-player-flex";
+	flex.id = id + "$ambience-player-flex";
+	const playBtn = document.createElement("a");
+	playBtn.className = "button w-button ab-player-btn ab-player-play";
+	playBtn.innerText = "⏸️";
+	playBtn.id = id + "$ab-player-play";
+	const title = document.createElement("div");
+	title.className = "text-block ab-player-title";
+	title.innerText = song.topic.charAt(0).toUpperCase() + song.topic.slice(1);
+	title.id = id + "$ab-player-title";
+	const closeBtn = document.createElement("a");
+	closeBtn.className = "button ab-player-btn ab-player-close w-button";
+	closeBtn.innerText = "⏹️";
+	closeBtn.id = id + "$ab-player-close";
+	const slider = document.createElement("input");
+	const attr = ["class", "volume-slider", "type", "range", "min", "0", "max", "100", "value", "50"];
+	for (let i = 0; i < attr.length; i += 2) {
+		slider.setAttribute(attr[i], attr[i + 1]);
+	}
+	const sliderContainer = document.createElement("div");
+	sliderContainer.className = "ambience-vol-container";
+	sliderContainer.appendChild(slider);
+
+	flex.appendChild(playBtn);
+	flex.appendChild(title);
+	flex.appendChild(closeBtn);
+	player.appendChild(flex);
+	player.appendChild(sliderContainer);
+
+	return player;
+}
+
+function activateAmbiencePlayerControls(
+	playerContainer: HTMLDivElement,
+	ytapi: YouTubePlayer,
+) {
+	/* Template:
+	<div class="ambience-player">
+		<div class="w-layout-hflex flex-block-2">
+			<a class="button w-button ab-player-btn ab-player-play">Play</a>
+			<div class="text-block ab-player-title">Title</div>
+			<a class="button ab-player-btn ab-player-close w-button">X</a>
+		</div>
+	</div> 
+	*/
+
+	//volume slider
+	const slider = playerContainer.getElementsByClassName("volume-slider")[0] as HTMLInputElement;
+	ytapi.setVolume(slider.valueAsNumber);
+	slider.addEventListener("change", () => {
+		ytapi.setVolume(slider.valueAsNumber);
+	});
+
+	//pause button
+	const pauseBtn = playerContainer.getElementsByClassName("ab-player-play")[0] as HTMLAnchorElement;
+	pauseBtn.addEventListener("click", () => {
+		togglePause(ytapi).then((stateId) => {
+			if(stateId == 1) {
+				pauseBtn.innerText = "▶️";
+				pauseBtn.className = pauseBtn.className.replace(" paused", "") + " playing";
+			} else if(stateId == 2 || stateId == 5) {	
+				pauseBtn.innerText = "⏸️";
+				pauseBtn.className = pauseBtn.className.replace(" playing", "") + " paused";
+
+			}
+			// inverted state because ytapi is not updated yet
+			
+			
+			
+		});
+	});
+
+	//close button
+	const closeBtn = playerContainer.getElementsByClassName("ab-player-close")[0] as HTMLAnchorElement;
+	closeBtn.addEventListener("click", () => {
+		closePlayer(playerContainer);
+	});
+
+	const title = playerContainer.getElementsByClassName("ab-player-title")[0] as HTMLDivElement;
+	title.addEventListener("click", () => playRandomTime(ytapi));
+}
+
+
 export {
-	appendNewYTPlayer as createNewYTPlayer,
+	appendMusicPlayer,
+	appendAmbiencePlayerPopup,
 	YTPlayer,
 	Songtypes,
 	extractYtIdFromLink,
@@ -228,6 +394,6 @@ export {
 	createYTEmbed,
 	playYtUrl,
 	playRandomTime,
-	togglePause,
 	playMusic,
+	appendAmbiencePlayer,
 };

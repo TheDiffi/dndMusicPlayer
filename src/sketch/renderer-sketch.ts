@@ -1,18 +1,19 @@
-import { ipcRenderer } from "electron";
-import { IpcS, Profile, Song, Songs } from "../util/types.util";
-import { YTPlayer, createNewYTPlayer, playMusic } from "../util/yt.util";
+import electron from "electron";
+import { IpcS, Profile, Scene, Song } from "../util/types.util";
+import { YTPlayer, appendMusicPlayer, playMusic, appendAmbiencePlayer } from "../util/yt.util";
 
+const ipc = electron.ipcRenderer;
 let ytPlayerMusicMain: YTPlayer;
 let ytPlayersAmbience: YTPlayer[] = [];
 let profiles: Map<string, Profile> = new Map(/* id, Profile */);
 let allSongs: Song[];
 let currentProfile: Profile;
 
-
 const docIds = {
-	songContainers: {
+	buttonContainers: {
 		music: "music-button-container",
 		ambience: "ambience-button-container",
+		scene: "scene-button-container",
 	},
 };
 
@@ -28,6 +29,11 @@ const htmlPresets = {
 			attributes: { class: "song-btn ambience-btn w-button", id: "", function: "play" },
 			innerHTML: "",
 		},
+		scene: {
+			element: "a",
+			attributes: { class: "scene-btn w-button", id: "", function: "play" },
+			innerHTML: "",
+		},
 	},
 };
 
@@ -35,46 +41,72 @@ function init() {
 	//creates the music player
 	const container = document.getElementById("music-player-container");
 	if (!container) throw Error("Could not find container");
-
 	//loads music player
-	ytPlayerMusicMain = createNewYTPlayer(container, "VZYr1eyC81g", "ytPlayer", "music");
-
-	// load profiles
-	profiles = ipcRenderer.sendSync(IpcS.getProfiles);
+	ytPlayerMusicMain = appendMusicPlayer(container, "VZYr1eyC81g");
 
 	// load Songs
-	allSongs = ipcRenderer.sendSync(IpcS.getAllSongs);
+	allSongs = ipc.sendSync(IpcS.getAllSongs);
 
-	loadProfile((document.getElementById("profile-selector") as HTMLInputElement).value);
+	// load profiles
+	
+	loadProfiles();
+
+	function loadProfiles() {
+		profiles = ipc.sendSync(IpcS.getProfiles);
+
+		const selector = document.getElementById("profile-selector");
+		if (!selector) throw Error("Could not find profile selector");
+		profiles.forEach((profile) => {
+			const option = document.createElement("option");
+			option.value = profile.id;
+			//first letter uppercase
+			option.text = profile.name.charAt(0).toUpperCase() + profile.name.slice(1);
+			selector.appendChild(option);
+		});
+
+		loadProfile("allSongs", false);
+	}
 }
 
-function loadProfile(profileId: string) {
+function loadProfile(profileId: string, autoplay: boolean = true) {
+	if (currentProfile && currentProfile.id === profileId) return;
 	console.log("Loading Profile: " + profileId);
-	let profile = profiles.get(profileId);
+	//loads all songs profile
+	let profile: Profile | undefined = profileId === "allSongs" ? getAllSongsProfile() : profiles.get(profileId);
+
 	if (!profile) {
 		console.error("Profile not found");
 		return;
 	}
-	if(profile.id === "0") {
-		allSongs.forEach((song: Song) => {
-			profile?.songs[song.type].push(song);
-		});
-	}
+
 
 	currentProfile = profile;
 	renderProfile(profile);
 
+	if(profile.id = "0") autoplay = false;
 	//play default
-	if (profile.defaultSong) playMusic(profile.defaultSong.id, ytPlayerMusicMain);
+	if (profile.defaultSong && autoplay) playMusic(profile.defaultSong.id, ytPlayerMusicMain);
 }
 
-function renderProfile(profile: Profile) {
-	renderSongButtons(profile.songs.music, "music");
-	renderSongButtons(profile.songs.ambience, "ambience");
+function getAllSongsProfile(){
+	const profile: Profile = {
+		name: "All Songs",
+		id: "allSongs",
+		songs: {
+			music: allSongs.filter((song) => song.type === "music"),
+			ambience: allSongs.filter((song) => song.type === "ambience"),
+		},
+		scenes: undefined,
+		defaultSong: undefined,
+	};
+	return profile;
+}
 
+
+function renderProfile(profile: Profile) {
 	//generate song buttons
-	let musicBtnParent = document.getElementById(docIds.songContainers.music);
-	let ambienceBtnParent = document.getElementById(docIds.songContainers.ambience);
+	let musicBtnParent = document.getElementById(docIds.buttonContainers.music);
+	let ambienceBtnParent = document.getElementById(docIds.buttonContainers.ambience);
 
 	if (!musicBtnParent || !ambienceBtnParent) {
 		throw Error("Could not generate Song Buttons: parent Element not found");
@@ -83,12 +115,14 @@ function renderProfile(profile: Profile) {
 	musicBtnParent.innerHTML = "";
 	ambienceBtnParent.innerHTML = "";
 
-	profile.songs.music.forEach((song: Song) => renderSongBtn(song, musicBtnParent!, "music"));
-	profile.songs.ambience.forEach((song: Song) => renderSongBtn(song, ambienceBtnParent!, "ambience"));
+	renderSongButtons(profile.songs.music, "music");
+	renderSongButtons(profile.songs.ambience, "ambience");
+
+	renderScenes(profile);
 }
 
 function renderSongButtons(songs: Song[], type: "music" | "ambience") {
-	let parent = document.getElementById(docIds.songContainers[type]);
+	let parent = document.getElementById(docIds.buttonContainers[type]);
 	if (!parent) throw Error(`Could not find ${type} button container`);
 
 	//clears the container
@@ -145,7 +179,6 @@ function musicButtonOnClick(button: HTMLElement) {
 			playMusicFromButton(button);
 			break;
 		case "stop":
-			
 			break;
 	}
 }
@@ -177,37 +210,93 @@ function ambienceButtonOnClick(button: HTMLElement) {
 
 			break;
 		case "stop":
-			
 			break;
 		case "edit":
-			
 			break;
 	}
 }
 
 function playAmbienceFromButton(button: HTMLElement) {
-	generateAmbiencePlayer(button.id);
-	setAmbienceButtonToPlaying(button);
+	//finds song
+	const song = allSongs.find((s) => s.id === button.id);
+	if (!song) throw Error("Song not found");
+	//generates player
+	generateAmbiencePlayer(song);
+
 	console.log(`Playing ${JSON.stringify(button.id)}`);
 }
 
-function generateAmbiencePlayer(ytId: string) {
-	throw new Error("Function not implemented.");
-	//TODO: generate Ambience Player
-
-}
-
-function setAmbienceButtonToPlaying(btnPlaying: HTMLElement) {
-	//sets playing for the music button
-	btnPlaying.setAttribute("function", "stop");
-	btnPlaying.setAttribute("class", btnPlaying.className + " playing");
-	btnPlaying.innerHTML = btnPlaying.innerHTML + "🛑";
+function generateAmbiencePlayer(song: Song) {
+	const player = appendAmbiencePlayer(document.getElementById("ambience-player-container")!, song);
+	ytPlayersAmbience.push(player);
 }
 
 //--------------------Event Listeners--------------------
 document.getElementById("profile-selector")?.addEventListener("change", () => {
 	loadProfile((document.getElementById("profile-selector") as HTMLInputElement).value);
 });
+
+document.getElementById("all-songs-btn")?.addEventListener("click", () => {
+	loadProfile("allSongs");
+});
+
+function renderScenes(profile: Profile) {
+	let parent = document.getElementById(docIds.buttonContainers.scene);
+	if (!parent) throw Error(`Could not find scene container`);
+	const scenes = profile.scenes;
+	if (scenes === undefined) {
+		parent.innerHTML = "No Scenes";
+		//document.getElementById("scene-container")!.style.display = "none";
+		return;
+	}
+
+	//clears the container
+	parent.innerHTML = "";
+	//document.getElementById("scene-container")!.style.display = "";
+
+	scenes.forEach((scene: Scene) => renderSceneBtn(scene, parent!));
+}
+
+function renderSceneBtn(scene: Scene, parent: HTMLElement) {
+	let element = generateSceneBtn(scene);
+	//creates container
+	const c = document.createElement("div");
+	c.appendChild(element);
+	parent.appendChild(c);
+
+	// adds event listener
+	element.addEventListener("click", () => {
+		sceneButtonOnClick(element);
+	});
+}
+
+function generateSceneBtn(scene: Scene): HTMLElement {
+	let button = document.createElement(htmlPresets.buttons.music.element);
+
+	//sets attributes
+	for (const [key, value] of Object.entries(htmlPresets.buttons.music.attributes)) {
+		button.setAttribute(key, value);
+	}
+	//sets id
+	button.setAttribute("id", scene.id);
+	//sets innerHTML
+	button.innerHTML = scene.name.charAt(0).toUpperCase() + scene.name.slice(1);
+
+	return button;
+}
+
+function sceneButtonOnClick(button: HTMLElement) {
+	const scene = currentProfile.scenes?.find((s) => s.id === button.id);
+	if (!scene) throw Error("Scene not found");
+	console.log(`Playing Scene ${JSON.stringify(button.id)}`);
+
+	loadScene(scene);
+}
+
+function loadScene(scene: Scene) {
+	console.log("Loading Scene: " + scene.name);
+	console.error("Not implemented yet");
+}
 
 init();
 
