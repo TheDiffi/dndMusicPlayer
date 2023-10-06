@@ -16,6 +16,10 @@ const indexPath = path.join(__dirname, "../sketch/sketch.html");
 let mainWin;
 
 function initialize() {
+	//load .env file
+	require("dotenv").config();
+	
+
 	console.info("Loading Scripts...");
 	loadScripts();
 	console.info("Scripts loaded");

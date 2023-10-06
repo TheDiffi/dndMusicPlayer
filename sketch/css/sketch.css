@@ -1,3 +1,9 @@
+:root{
+  --grey-border: #bbaba3;
+}
+
+
+
 html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -2513,7 +2519,7 @@ textarea.w-select {
   width: 47%;
   height: 60px;
   background-color: rgba(83, 83, 83, .18);
-  border: 1px solid #bbaba3;
+  border: 1px solid var(--grey-border);
   flex: 0 auto;
   margin-top: 2px;
   margin-bottom: 2px;
@@ -2555,6 +2561,7 @@ textarea.w-select {
   padding-right: 2px;
   font-style: normal;
   overflow: hidden;
+  text-overflow:clip;
 }
 
 .flex-block-2 {
@@ -2793,7 +2800,7 @@ textarea.w-select {
   flex-basis: auto;
   flex-shrink: 0.5;
   text-align: center;
-  border: 1px solid #bbaba3;
+  border: 1px solid var(--grey-border);
 }
 
 .button:hover {
@@ -2817,3 +2824,61 @@ textarea.w-select {
 #all-songs-btn{
   cursor: pointer;
 }
+
+
+.popup-container {
+  position: relative;
+  display: none;
+}
+
+.popup-wrapper{
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: auto;
+  right: auto;
+  text-align: center;
+  padding: 10px 10px 10px 30px;
+  
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+
+  border : 1px solid var(--grey-border);
+  overflow-y: auto;
+}
+
+.popup-content{
+  width: 100%;
+
+}
+
+.popup-item{
+  padding: 10px;
+  border-bottom: 1px solid transparent;
+ 
+}
+.popup-item:hover{
+  /* background-color: #a1a1a15b; */
+  .search-result{
+    scale: 1.1;
+
+  }
+  border-bottom: 1px solid var(--grey-border);
+}
+
+.search-result-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-result{
+  font-weight: 600;
+}
+
+.search-result-button{
+  display: inline-block;
+  margin: auto;
+}
+
+

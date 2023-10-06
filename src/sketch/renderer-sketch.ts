@@ -1,6 +1,16 @@
 import electron from "electron";
 import { IpcS, Profile, Scene, Song } from "../util/types.util";
-import { YTPlayer, appendMusicPlayer, playMusic, appendAmbiencePlayer } from "../util/yt.util";
+import {
+	YTPlayer,
+	appendMusicPlayer,
+	playMusic,
+	appendAmbiencePlayer,
+	setAmbiencePlayerState,
+	closePlayer,
+	extractYtIdFromLink,
+	youTubeSearchRequest,
+	youTubeSongSearch,
+} from "../util/yt.util";
 
 const ipc = electron.ipcRenderer;
 let ytPlayerMusicMain: YTPlayer;
@@ -48,7 +58,7 @@ function init() {
 	allSongs = ipc.sendSync(IpcS.getAllSongs);
 
 	// load profiles
-	
+
 	loadProfiles();
 
 	function loadProfiles() {
@@ -79,16 +89,15 @@ function loadProfile(profileId: string, autoplay: boolean = true) {
 		return;
 	}
 
-
 	currentProfile = profile;
 	renderProfile(profile);
 
-	if(profile.id = "0") autoplay = false;
+	if ((profile.id = "0")) autoplay = false;
 	//play default
 	if (profile.defaultSong && autoplay) playMusic(profile.defaultSong.id, ytPlayerMusicMain);
 }
 
-function getAllSongsProfile(){
+function getAllSongsProfile() {
 	const profile: Profile = {
 		name: "All Songs",
 		id: "allSongs",
@@ -101,7 +110,6 @@ function getAllSongsProfile(){
 	};
 	return profile;
 }
-
 
 function renderProfile(profile: Profile) {
 	//generate song buttons
@@ -206,7 +214,8 @@ function setMusicButtonToPlaying(btnPlaying: HTMLElement) {
 function ambienceButtonOnClick(button: HTMLElement) {
 	switch (button.getAttribute("function")) {
 		case "play":
-			playAmbienceFromButton(button);
+			const song = allSongs.find((s) => s.id === button.id);
+			playAmbience(song);
 
 			break;
 		case "stop":
@@ -216,20 +225,17 @@ function ambienceButtonOnClick(button: HTMLElement) {
 	}
 }
 
-function playAmbienceFromButton(button: HTMLElement) {
-	//finds song
-	const song = allSongs.find((s) => s.id === button.id);
+function playAmbience(song: Song|undefined) {
 	if (!song) throw Error("Song not found");
+	console.log(song);
 	//generates player
-	generateAmbiencePlayer(song);
-
-	console.log(`Playing ${JSON.stringify(button.id)}`);
-}
-
-function generateAmbiencePlayer(song: Song) {
 	const player = appendAmbiencePlayer(document.getElementById("ambience-player-container")!, song);
 	ytPlayersAmbience.push(player);
+
+	console.log(`Playing ${JSON.stringify(song.id)}`);
 }
+
+
 
 //--------------------Event Listeners--------------------
 document.getElementById("profile-selector")?.addEventListener("change", () => {
@@ -239,6 +245,85 @@ document.getElementById("profile-selector")?.addEventListener("change", () => {
 document.getElementById("all-songs-btn")?.addEventListener("click", () => {
 	loadProfile("allSongs");
 });
+
+document.getElementById("pause-all-btn")?.addEventListener("click", () => {
+	ytPlayerMusicMain.api.stopVideo();
+	ytPlayersAmbience.forEach((player) => {
+		player.api.stopVideo();
+		setAmbiencePlayerState("paused", player.container);
+	});
+});
+
+document.getElementById("start-all-btn")?.addEventListener("click", () => {
+	ytPlayerMusicMain.api.playVideo();
+	ytPlayersAmbience.forEach((player) => {
+		player.api.playVideo();
+		setAmbiencePlayerState("playing", player.container);
+	});
+});
+
+document.getElementById("close-all-btn")?.addEventListener("click", () => {
+	ytPlayerMusicMain.api.stopVideo();
+	ytPlayersAmbience.forEach((player) => {
+		closePlayer(player.container);
+	});
+});
+
+document.getElementById("quickplay-submit")?.addEventListener("click", () => {
+	const input = (document.getElementById("quickplay-input") as HTMLInputElement).value;
+	if (!input) throw Error("No input");
+	// if input starts with "https://"
+	if (input.startsWith("https://")) {
+		const id = extractYtIdFromLink(input);
+		if (!id) throw Error("Could not extract id from link");
+		playMusic(id, ytPlayerMusicMain);
+	} else {
+		quickSearch(input);
+	}
+});
+
+async function quickSearch(input: string) {
+	//searches for song
+	const data = await youTubeSongSearch(input, "music");
+	//create a popup with the results
+	const popup = document.getElementById("quickplay-popup");
+	if (!popup) throw Error("Could not find popup");
+	popup.innerHTML = "";
+	
+	//creates a popup item for each result
+	data.forEach((ytData) => {
+		//get first 20 characters of the title
+		let name = ytData.snippet.title;
+		if(name.length > 40) name = name.substring(0, 35) + "...";
+
+		const searchElem = generateSearchResultHtml(name);
+		const element = document.createElement("div");
+		element.className = "popup-item";
+		element.setAttribute("ytId", ytData.id);
+		element.appendChild(searchElem);
+		
+		element.getElementsByClassName("search-result-button")[0].addEventListener("click", () => {
+			playMusic(ytData.id, ytPlayerMusicMain);
+			document.getElementById("quickplay-popup-container")!.style.display = "none";
+
+		});
+		element.getElementsByClassName("search-result-button")[1].addEventListener("click", () => {
+			const song: Song = {
+				id: ytData.id.videoId,
+				topic: name.substring(0, 6),
+				type: "ambience",
+				volume: 40,
+			}
+			playAmbience(song);
+			document.getElementById("quickplay-popup-container")!.style.display = "none";
+
+		});
+		popup.appendChild(element);
+	});
+	//shows the popup
+	document.getElementById("quickplay-popup-container")!.style.display = "block";
+}
+
 
 function renderScenes(profile: Profile) {
 	let parent = document.getElementById(docIds.buttonContainers.scene);
@@ -300,4 +385,27 @@ function loadScene(scene: Scene) {
 
 init();
 
+
+
+
+function generateSearchResultHtml(name: string) {
+	const wrapper = document.createElement("div");
+	wrapper.className = "search-result-wrapper";
+	const title = document.createElement("div");
+	title.className = "search-result";
+	title.innerHTML = name;
+	const buttons = document.createElement("div");
+	const musicBtn = document.createElement("button");
+	musicBtn.className = "search-result-button button-simple";
+	musicBtn.innerHTML = "🎵";
+	const ambienceBtn = document.createElement("button");
+	ambienceBtn.className = "search-result-button button-simple";
+	ambienceBtn.innerHTML = "✨";
+
+	buttons.appendChild(musicBtn);
+	buttons.appendChild(ambienceBtn);
+	wrapper.appendChild(title);
+	wrapper.appendChild(buttons);
+	return wrapper;
+}
 

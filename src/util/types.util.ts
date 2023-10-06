@@ -30,7 +30,6 @@ export enum IpcR {
 export interface Song {
 	topic: string;
 	id: string;
-	length: number;
 	volume: number | undefined;
 	type: "music" | "ambience";
 }

@@ -25,7 +25,7 @@ function appendMusicPlayer(parent: HTMLElement, ytId: string): YTPlayer {
 	let newPlayer: YTPlayer = {
 		api: apiEmbed,
 		type: type,
-		controls: controlsEmbed,
+		container: playerContainer,
 		playerId: playerId,
 		song: undefined,
 	};
@@ -56,7 +56,7 @@ function appendAmbiencePlayerPopup(parent: HTMLElement, ytId: string): YTPlayer 
 	let newPlayer: YTPlayer = {
 		api: apiEmbed,
 		type: type,
-		controls: controlsEmbed,
+		container: playerContainer,
 		playerId: playerId,
 		song: undefined,
 	};
@@ -79,7 +79,7 @@ function appendYTEmbed(
 	const apiEmbedContainer = document.createElement("div");
 	const embedId = "ytEmbed" + playerId;
 	apiEmbedContainer.id = embedId;
-	
+
 	//apiEmbedContainer.className = "yt-embed rpgui-container framed-grey";
 	playerContainer.appendChild(apiEmbedContainer);
 
@@ -91,7 +91,7 @@ function appendYTEmbed(
 		playerVars: apiEmbedOptions,
 	});
 
-	if(!apiEmbed) throw Error("apiEmbed is undefined");
+	if (!apiEmbed) throw Error("apiEmbed is undefined");
 
 	if (playerOptions.hidden) apiEmbedContainer.style.display = "none";
 
@@ -182,109 +182,19 @@ function appendAmbiencePlayer(parent: HTMLElement, song: Song): YTPlayer {
 	);
 
 	//player controls
-	activateAmbiencePlayerControls(playerElement, apiEmbed );
+	activateAmbiencePlayerControls(playerElement, apiEmbed);
 
 	// creates the new player
 	let newPlayer: YTPlayer = {
 		api: apiEmbed,
 		type: type,
-		controls: playerElement,
+		container: playerElement,
 		playerId: playerId,
 		song: undefined,
 	};
 
 	return newPlayer;
 }
-
-async function togglePause(player: YouTubePlayer): Promise<number> {
-	let state = await player.getPlayerState();
-	if (state == 1) {
-		player.pauseVideo();
-	} else if (state == 2 || state == 5) {
-		player.playVideo();
-	}
-	return state as number;
-}
-
-function playMusic(songId: string, ytPlayerMusic: YTPlayer) {
-	ytPlayerMusic.api.loadVideoById(songId);
-	playRandomTime(ytPlayerMusic.api);
-	ytPlayerMusic.api.setVolume(50);
-	ytPlayerMusic.api.setLoop(true);
-}
-
-function closePlayer(playerContainer: HTMLDivElement) {
-	playerContainer.remove();
-}
-
-async function playRandomTime(ytapi: YouTubePlayer) {
-	let duration = await ytapi.getDuration();
-	ytapi.seekTo(Math.random() * (duration - duration / 10), true);
-}
-
-function playExampleVid(ytapi: YouTubePlayer): void {
-	ytapi.loadVideoById("rQryOSyfXmI");
-}
-
-function playYtUrl(url: string, appendToId: string = "ytContainer") {
-	if (null === document.getElementById("ytEmbed")) {
-		createYTEmbed(appendToId, url);
-	} else {
-		document.getElementById("ytEmbed")!.setAttribute("src", url);
-	}
-}
-
-function extractYtIdFromLink(ytUrl: string) {
-	var regExp = RegExp(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
-	var match = ytUrl.match(regExp);
-	return match && match[7].length == 11 ? match[7] : "";
-}
-
-function parseYtIdToEmbedLink(ytId: string, isAutoplay = false, isLoop = false, videoLength = 0) {
-	let autoplayParam = isAutoplay ? "autoplay=1" : "autoplay=0";
-	let randomStartParam =
-		videoLength != 0 ? "start=" + Math.floor(Math.random() * (videoLength * 60 * 0.75)) : "start=0";
-	let loopParam = isLoop ? "loop=1&playlist=" + ytId : "loop=0";
-
-	let url = "http://www.youtube.com/embed/" + ytId + "?" + autoplayParam + "&" + randomStartParam + "&" + loopParam;
-	console.log("parseYtIdToEmbedUrl: " + url);
-	return url;
-}
-
-function createYTEmbed(appendToId: string, ytUrl: string, asAudioPlayer = false) {
-	const iframe = document.createElement("iframe");
-	const width = asAudioPlayer ? 560 : 560;
-	const height = asAudioPlayer ? 25 : 315;
-	let attr2 = [
-		"ytEmbed",
-		"560",
-		"315",
-		ytUrl,
-		"Player",
-		"0",
-		"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
-	];
-	["id", "width", "height", "src", "title", "frameborder", "allow"].forEach((attr1) => {
-		if (attr2.length > 0) {
-			console.log(attr1 + " : " + attr2[0]);
-			iframe.setAttribute(attr1, attr2.shift()!);
-		}
-	});
-	const ytContainer = document.getElementById(appendToId);
-	ytContainer?.appendChild(iframe);
-}
-
-interface YTPlayer {
-	song: Song | undefined;
-	api: YouTubePlayer;
-	type: "music" | "ambience";
-	controls: HTMLDivElement;
-	playerId: number;
-	//TODO: add rest
-}
-
-type Songtypes = "music" | "ambience";
-
 
 function generateAmbiencePlayerElement(id: number, song: Song): HTMLDivElement {
 	/* 
@@ -333,10 +243,7 @@ function generateAmbiencePlayerElement(id: number, song: Song): HTMLDivElement {
 	return player;
 }
 
-function activateAmbiencePlayerControls(
-	playerContainer: HTMLDivElement,
-	ytapi: YouTubePlayer,
-) {
+function activateAmbiencePlayerControls(playerContainer: HTMLDivElement, ytapi: YouTubePlayer) {
 	/* Template:
 	<div class="ambience-player">
 		<div class="w-layout-hflex flex-block-2">
@@ -358,18 +265,9 @@ function activateAmbiencePlayerControls(
 	const pauseBtn = playerContainer.getElementsByClassName("ab-player-play")[0] as HTMLAnchorElement;
 	pauseBtn.addEventListener("click", () => {
 		togglePause(ytapi).then((stateId) => {
-			if(stateId == 1) {
-				pauseBtn.innerText = "▶️";
-				pauseBtn.className = pauseBtn.className.replace(" paused", "") + " playing";
-			} else if(stateId == 2 || stateId == 5) {	
-				pauseBtn.innerText = "⏸️";
-				pauseBtn.className = pauseBtn.className.replace(" playing", "") + " paused";
-
-			}
-			// inverted state because ytapi is not updated yet
-			
-			
-			
+			// inverted because the state is the state before the click
+			const newState = stateId == 1 ? "paused" : "playing";
+			setAmbiencePlayerState(newState, playerContainer);
 		});
 	});
 
@@ -383,9 +281,131 @@ function activateAmbiencePlayerControls(
 	title.addEventListener("click", () => playRandomTime(ytapi));
 }
 
+function setAmbiencePlayerState(newState: "paused" | "playing", playerContainer: HTMLDivElement) {
+	const pauseBtn = playerContainer.getElementsByClassName("ab-player-play")[0] as HTMLAnchorElement;
+	if (newState == "paused") {
+		pauseBtn.innerText = "▶️";
+		pauseBtn.className = pauseBtn.className.replace(" paused", "") + " playing";
+	} else if ((newState = "playing")) {
+		pauseBtn.innerText = "⏸️";
+		pauseBtn.className = pauseBtn.className.replace(" playing", "") + " paused";
+	}
+}
+
+async function togglePause(player: YouTubePlayer): Promise<number> {
+	let state = await player.getPlayerState();
+	if (state == 1) {
+		player.pauseVideo();
+	} else if (state == 2 || state == 5) {
+		player.playVideo();
+	}
+	return state as number;
+}
+
+function playMusic(songId: string, ytPlayerMusic: YTPlayer) {
+	ytPlayerMusic.api.loadVideoById(songId);
+	playRandomTime(ytPlayerMusic.api);
+	ytPlayerMusic.api.setVolume(50);
+	ytPlayerMusic.api.setLoop(true);
+}
+
+function closePlayer(playerContainer: HTMLDivElement) {
+	playerContainer.remove();
+}
+
+async function playRandomTime(ytapi: YouTubePlayer) {
+	let duration = await ytapi.getDuration();
+	ytapi.seekTo(Math.random() * (duration - duration / 10), true);
+}
+
+function playExampleVid(ytapi: YouTubePlayer): void {
+	ytapi.loadVideoById("rQryOSyfXmI");
+}
+
+function playYtUrl(url: string, appendToId: string = "ytContainer") {
+	if (null === document.getElementById("ytEmbed")) {
+		createYTEmbed(appendToId, url);
+	} else {
+		document.getElementById("ytEmbed")!.setAttribute("src", url);
+	}
+}
+
+function extractYtIdFromLink(ytUrl: string): string {
+	var regExp = RegExp(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
+	var match = ytUrl.match(regExp);
+	return match && match[7].length == 11 ? match[7] : "";
+}
+
+function parseYtIdToEmbedLink(ytId: string, isAutoplay = false, isLoop = false, videoLength = 0) {
+	let autoplayParam = isAutoplay ? "autoplay=1" : "autoplay=0";
+	let randomStartParam =
+		videoLength != 0 ? "start=" + Math.floor(Math.random() * (videoLength * 60 * 0.75)) : "start=0";
+	let loopParam = isLoop ? "loop=1&playlist=" + ytId : "loop=0";
+
+	let url = "http://www.youtube.com/embed/" + ytId + "?" + autoplayParam + "&" + randomStartParam + "&" + loopParam;
+	console.log("parseYtIdToEmbedUrl: " + url);
+	return url;
+}
+
+function createYTEmbed(appendToId: string, ytUrl: string, asAudioPlayer = false) {
+	const iframe = document.createElement("iframe");
+	const width = asAudioPlayer ? 560 : 560;
+	const height = asAudioPlayer ? 25 : 315;
+	let attr2 = [
+		"ytEmbed",
+		"560",
+		"315",
+		ytUrl,
+		"Player",
+		"0",
+		"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+	];
+	["id", "width", "height", "src", "title", "frameborder", "allow"].forEach((attr1) => {
+		if (attr2.length > 0) {
+			iframe.setAttribute(attr1, attr2.shift()!);
+		}
+	});
+	document.getElementById(appendToId)?.appendChild(iframe);
+}
+
+async function youTubeSearchRequest(
+	searchString: string,
+	maxResults: number = 5,
+	type: "video" | "channel" | "playlist" = "video"
+) {
+	const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${maxResults}&q=${searchString}&type=${type}&key=${process.env.YT_API_KEY}`;
+	try {
+		const res = await fetch(url);
+		const data = await res.json();
+		console.log("Search Response:")
+		console.log(data);
+
+		return data.items;
+	} catch (err) {
+		console.error(err);
+		return [];
+	}
+}
+
+function youTubeSongSearch(searchString: string, type: "music" | "ambience", maxResults: number = 3) {
+	const dndSearch = "fantasy dnd " + type + " " + searchString;
+	return youTubeSearchRequest(dndSearch, maxResults, "video");
+}
+
+interface YTPlayer {
+	song: Song | undefined;
+	api: YouTubePlayer;
+	type: "music" | "ambience";
+	container: HTMLDivElement;
+	playerId: number;
+	//TODO: add rest
+}
+
+type Songtypes = "music" | "ambience";
 
 export {
 	appendMusicPlayer,
+	youTubeSearchRequest,
 	appendAmbiencePlayerPopup,
 	YTPlayer,
 	Songtypes,
@@ -396,4 +416,7 @@ export {
 	playRandomTime,
 	playMusic,
 	appendAmbiencePlayer,
+	setAmbiencePlayerState,
+	closePlayer,
+	youTubeSongSearch,
 };

@@ -95,9 +95,9 @@
 							<!-- <label>Ambience Controller</label> -->
 
 							<div id="ambience-contoller" class="controls-row">
-								<a href="#" class="button w-button">Stop All</a>
-								<a href="#" class="button w-button">X</a>
-								<a href="#" class="button w-button">X</a>
+								<a href="#" id="pause-all-btn" class="button w-button">Pause All</a>
+								<a href="#" id="start-all-btn" class="button w-button">Start All</a>
+								<a href="#" id="close-all-btn" class="button w-button">Close All</a>
 								<a href="#" class="button w-button">X</a>
 							</div>
 						</div>
@@ -114,13 +114,46 @@
 									<input class="volume-slider" type="range" min:0 max:100 value:50 />
 								</div>
 							</div> -->
-							<div class="ambience-player" style="display:none;"></div>
+							<div class="ambience-player" style="display: none"></div>
 						</div>
 					</div>
 					<div id="quick-player-container" class="div-100w">
 						<div class="nav-divider"></div>
 						<div class="input-group-wrapper">
 							<label>Quickplay</label>
+							<div id="quickplay-popup-container" class="popup-container">
+								<div id="quickplay-popup-wrapper" class="popup-wrapper">
+									<div id="quickplay-popup" class="popup-content">
+										<div class="popup-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div >
+													<button class="search-result-button button-simple">🎵</button>
+													<button class="search-result-button button-simple">✨</button>
+												</div>
+											</div>
+										</div>
+										<div class="popup-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div >
+													<button class="search-result-button button-simple">🎵</button>
+													<button class="search-result-button button-simple">✨</button>
+												</div>
+											</div>
+										</div>
+										<div class="popup-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div >
+													<button class="search-result-button button-simple">🎵</button>
+													<button class="search-result-button button-simple">✨</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 							<div class="input-group">
 								<input
 									type="text"
@@ -128,7 +161,7 @@
 									id="quickplay-input"
 									placeholder="https://www.youtube.com/...."
 								/>
-								<button id="submit" class="w-input button-simple">Enter</button>
+								<button id="quickplay-submit" class="w-input button-simple">Enter</button>
 							</div>
 						</div>
 					</div>
