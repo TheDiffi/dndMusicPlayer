@@ -2934,6 +2934,15 @@ textarea.w-select {
   cursor: pointer;
 }
 
+.popup-close.big{
+  font-size: x-large;
+  position: absolute;
+  top: 7px;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+}
+
 #add-song-container{
   display: flex;
   justify-content: space-around;

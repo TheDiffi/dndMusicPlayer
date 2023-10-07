@@ -1,10 +1,12 @@
 //export all functions from this file
 
+import { Song } from "../util/types.util";
+import { youTubeSongSearch } from "../util/yt.util";
 
-export function renderAddSongPopup(){
+export function renderAddSongPopup(type: "music" | "ambience") {
 	//create popup element
-	const popup = generateGenericPopup("Add Songs To Profile", generateDoubleSongSearch());
-    document.body.appendChild(popup);
+	const popup = generateGenericPopup("Add Songs To Profile", generateDoubleSongSearch(type));
+	document.body.appendChild(popup);
 
 	//generate song object
 
@@ -31,7 +33,7 @@ export function generateGenericPopup(title: string, content: HTMLElement) {
 	const popupWrapper = document.createElement("div");
 	popupWrapper.classList.add("popup-wrapper");
 	const popupClose = document.createElement("div");
-	popupClose.classList.add("popup-close");
+	popupClose.classList.add("popup-close", "big");
 	popupClose.innerText = "✖️";
 	const popupTitle = document.createElement("div");
 	popupTitle.classList.add("popup-title");
@@ -50,26 +52,26 @@ export function generateGenericPopup(title: string, content: HTMLElement) {
 		popupContainer.remove();
 	});
 
-    popupContent.appendChild(content);
+	popupContent.appendChild(content);
 
 	return popupContainer;
 }
 
-function generateDoubleSongSearch(): HTMLDivElement {
+function generateDoubleSongSearch(type: "music" | "ambience"): HTMLDivElement {
 	/* <div id="add-song-container">
            {children}
         </div> */
-    const container = document.createElement("div");
-    container.id = "add-song-container";
-    const songSearch = generateSongSearch();
-	const youtubeSearch = generateYTSearch();
-    container.appendChild(songSearch);
-    container.appendChild(youtubeSearch);
-    return container;
+	const container = document.createElement("div");
+	container.id = "add-song-container";
+	const songSearch = generateSongSearch();
+	const youtubeSearch = generateYTSearch(type);
+	container.appendChild(songSearch);
+	container.appendChild(youtubeSearch);
+	return container;
 }
 
-function generateYTSearch(): HTMLDivElement {
-    /* <div class="youtube-search-big div-100w pad-5">
+function generateYTSearch(type: "music" | "ambience"): HTMLDivElement {
+	/* <div class="youtube-search-big div-100w pad-5">
                 <h5>YT Search</h5>
                 <div class="input-group-wrapper">
                     <div class="input-group">
@@ -89,44 +91,164 @@ function generateYTSearch(): HTMLDivElement {
                     </div>
                 </div>
             </div> */
-    const container = document.createElement("div");
-    container.classList.add("youtube-search-big", "div-100w", "pad-5");
-    const title = document.createElement("h5");
-    title.innerText = "YT Search";
-    const inputGroupWrapper = document.createElement("div");
-    inputGroupWrapper.classList.add("input-group-wrapper");
-    const inputGroup = document.createElement("div");
-    inputGroup.classList.add("input-group");
-    const input = document.createElement("input");
-    input.type = "text";
-    input.classList.add("w-input");
-    input.id = "add-song-yt-search-input";
-    input.placeholder = "https://www.youtube.com/....";
-    const button = document.createElement("button");
-    button.id = "yt-search-submit";
-    button.classList.add("yt-search-submit", "w-input", "button-simple");
-    button.innerText = "Enter";
-    const selectContainer = document.createElement("div");
-    selectContainer.classList.add("select-container");
-    const selectWrapper = document.createElement("div");
-    selectWrapper.classList.add("select-wrapper");
-    const selectContent = document.createElement("div");
-    selectContent.classList.add("select-content");
-    
-    inputGroup.appendChild(input);
-    inputGroup.appendChild(button);
-    inputGroupWrapper.appendChild(inputGroup);
-    selectWrapper.appendChild(selectContent);
-    selectContainer.appendChild(selectWrapper);
-    container.appendChild(title);
-    container.appendChild(inputGroupWrapper);
-    container.appendChild(selectContainer);
+	const container = document.createElement("div");
+	container.classList.add("youtube-search-big", "div-100w", "pad-5");
+	const title = document.createElement("h5");
+	title.innerText = "YT Search";
+	const inputGroupWrapper = document.createElement("div");
+	inputGroupWrapper.classList.add("input-group-wrapper");
+	const inputGroup = document.createElement("div");
+	inputGroup.classList.add("input-group");
+	const input = document.createElement("input");
+	input.type = "text";
+	input.classList.add("w-input");
+	input.id = "add-song-yt-search-input";
+	input.placeholder = "https://www.youtube.com/....";
+	const button = document.createElement("button");
+	button.id = "yt-search-submit";
+	button.classList.add("yt-search-submit", "w-input", "button-simple");
+	button.innerText = "Enter";
+	const selectContainer = document.createElement("div");
+	selectContainer.classList.add("select-container");
+	const selectWrapper = document.createElement("div");
+	selectWrapper.classList.add("select-wrapper");
+	const selectContent = document.createElement("div");
+	selectContent.classList.add("select-content");
 
-    return container;
+	inputGroup.appendChild(input);
+	inputGroup.appendChild(button);
+	inputGroupWrapper.appendChild(inputGroup);
+	selectWrapper.appendChild(selectContent);
+	selectContainer.appendChild(selectWrapper);
+	container.appendChild(title);
+	container.appendChild(inputGroupWrapper);
+	container.appendChild(selectContainer);
+
+	button.addEventListener("click", () => {
+		const inputValue = input.value;
+		if (!inputValue) throw Error("Input value is empty");
+
+		renderYTSearchFunction(inputValue, selectContent, type, {
+			buttons: [
+				{
+					innerHTML: "+🎵",
+					onClick: (ytId: string, button) => {
+						addSongBtnOnClick(ytId, button, "music");
+					},
+				},
+				{
+					innerHTML: "+✨",
+					onClick: (ytId: string, button) => {
+						addSongBtnOnClick(ytId, button, "ambience");
+					},
+				},
+			],
+		});
+	});
+
+	return container;
 }
 
-function generateSongSearch(): HTMLDivElement{
-    /*  <div class="song-search-container div-100w pad-5">
+function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music" | "ambience") {
+	const item = button.parentElement?.parentElement?.parentElement as HTMLDivElement;
+	const input = item?.getElementsByClassName("give-song-name-input")[0] as HTMLInputElement;
+
+	//if there is no song name input, generate one
+	if (!input) {
+		//generate input for song name
+		const songNameInput = document.createElement("input");
+		songNameInput.type = "text";
+		songNameInput.classList.add("w-input", "div-100w", "give-song-name-input");
+		songNameInput.placeholder = "Enter Title Of Song To Save";
+		item?.appendChild(songNameInput);
+
+		//remove all other inputs
+		document.querySelectorAll(".give-song-name-input").forEach((input) => {
+			input.remove();
+		});
+	} else {
+		//get song name
+		const songName = input.value;
+		if (!songName) {
+			input.style.border = "1px solid red";
+			return;
+		}
+
+		//generate song object
+		const song: Song = {
+			id: ytId,
+			topic: songName,
+			volume: 50,
+			type: type,
+		};
+
+		//add song to profile
+		addSongToProfile(song);
+
+		// done
+		input.remove();
+		button.replaceWith("✅");
+	}
+}
+
+function addSongToProfile(song: Song) {}
+
+async function renderYTSearchFunction(
+	input: string,
+	parent: HTMLElement,
+	type: "music" | "ambience",
+	options: SearchResultFormatOptions
+) {
+	//sends search request to youtube
+	const data = await youTubeSongSearch(input, type);
+
+	const container = document.createElement("div");
+	//creates a item for each result
+	data.forEach((ytData) => {
+		//get first 20 characters of the title
+		let name = ytData.snippet.title;
+		if (name.length > 40) name = name.substring(0, 35) + "...";
+
+		const element = generateSearchResultHtml(name, ytData.id.videoId, options);
+
+		container.appendChild(element);
+	});
+
+	parent.appendChild(container);
+}
+
+export function generateSearchResultHtml(name: string, id: string, options: SearchResultFormatOptions) {
+	const item = document.createElement("div");
+	item.className = "select-item";
+	item.id = "select-item " + id;
+	const wrapper = document.createElement("div");
+	wrapper.className = "search-result-wrapper";
+	const title = document.createElement("div");
+	title.className = "search-result";
+	title.innerHTML = name;
+	const buttons = document.createElement("div");
+	buttons.className = "search-result-buttons";
+
+	wrapper.appendChild(title);
+	wrapper.appendChild(buttons);
+	item.setAttribute("ytId", id);
+	item.appendChild(wrapper);
+
+	for (const buttonOpt of options.buttons) {
+		const button = document.createElement("button");
+		button.className = "search-result-button button-simple";
+		button.innerHTML = buttonOpt.innerHTML;
+		buttons.appendChild(button);
+		button.addEventListener("click", () => {
+			buttonOpt.onClick(id, button);
+		});
+	}
+
+	return item;
+}
+
+function generateSongSearch(): HTMLDivElement {
+	/*  <div class="song-search-container div-100w pad-5">
                 <h5>Saved Songs</h5>
                 <div class="songs-search-wrapper">
                     <div class="songs-search">
@@ -146,11 +268,11 @@ function generateSongSearch(): HTMLDivElement{
                 </div>
             </div> 
     */
-    const container = document.createElement("div");
+	const container = document.createElement("div");
 	container.id = "add-song-container";
 	container.classList.add("div-100w");
 	const searchContainer = document.createElement("div");
-	searchContainer.classList.add("song-search-container","div-100w","pad-5");
+	searchContainer.classList.add("song-search-container", "div-100w", "pad-5");
 	const title = document.createElement("h5");
 	title.innerText = "Saved Songs";
 	const searchWrapper = document.createElement("div");
@@ -169,7 +291,7 @@ function generateSongSearch(): HTMLDivElement{
 	const selectContent = document.createElement("div");
 	selectContent.classList.add("select-content", "songs-select-content");
 
-    songsSearch.appendChild(input);
+	songsSearch.appendChild(input);
 	searchWrapper.appendChild(songsSearch);
 	selectWrapper.appendChild(selectContent);
 	selectContainer.appendChild(selectWrapper);
@@ -178,40 +300,12 @@ function generateSongSearch(): HTMLDivElement{
 	searchContainer.appendChild(selectContainer);
 	container.appendChild(searchContainer);
 
-    return container;
+	return container;
 }
 
-export function generateSearchResultHtml(name: string, id: string, options: SearchResultFormatOptions) {
-	const item = document.createElement("div");
-	item.className = "select-item";
-    const wrapper = document.createElement("div");
-	wrapper.className = "search-result-wrapper";
-	const title = document.createElement("div");
-	title.className = "search-result";
-	title.innerHTML = name;
-	const buttons = document.createElement("div");
-    buttons.className = "search-result-buttons";
-	
-	wrapper.appendChild(title);
-	wrapper.appendChild(buttons);
-    item.setAttribute("ytId", id);
-	item.appendChild(wrapper);
-
-    for (const button of options.buttons) {
-        const musicBtn = document.createElement("button");
-        musicBtn.className = "search-result-button button-simple";
-        musicBtn.innerHTML = button.innerHTML;
-        buttons.appendChild(musicBtn);
-        musicBtn.addEventListener("click", button.onClick);
-    }
-
-	return item;
-}
-
-type SearchResultFormatOptions = { 
-    buttons: {
-        innerHTML: string
-        onClick: () => void
-    }[]; 
-}
-
+type SearchResultFormatOptions = {
+	buttons: {
+		innerHTML: string;
+		onClick: (ytId: string, button: HTMLButtonElement) => void;
+	}[];
+};

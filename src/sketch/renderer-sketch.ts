@@ -285,10 +285,10 @@ function loadEventListeners() {
 	});
 
 	document.getElementById("add-music-btn")?.addEventListener("click", () => {
-		renderAddSongPopup();
+		renderAddSongPopup("music");
 	});
 	document.getElementById("add-ambience-btn")?.addEventListener("click", () => {
-		renderAddSongPopup();
+		renderAddSongPopup("ambience");
 	});
 }
 
@@ -302,7 +302,6 @@ async function quickSearch(input: string) {
 
 	//creates a popup item for each result
 	data.forEach((ytData) => {
-		console.log("Duration: ");
 		//get first 20 characters of the title
 		let name = ytData.snippet.title;
 		if (name.length > 40) name = name.substring(0, 35) + "...";
