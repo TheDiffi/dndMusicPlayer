@@ -183,7 +183,7 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 		};
 
 		//add song to profile
-		addSongToProfile(song);
+		//addSongToProfile(song);
 
 		// done
 		input.remove();
@@ -191,7 +191,7 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 	}
 }
 
-function addSongToProfile(song: Song) {}
+
 
 async function renderYTSearchFunction(
 	input: string,
