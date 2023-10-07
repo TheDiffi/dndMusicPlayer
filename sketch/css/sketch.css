@@ -2274,15 +2274,12 @@ textarea.w-select {
   background-color: rgba(0, 0, 0, 0);
   margin-left: auto;
   margin-right: auto;
-  padding: 15px 20px;
+  padding: 1.5vh 20px;
 }
 
 .navbar-logo-left-container.shadow-three {
   width: 100%;
   max-width: 1140px;
-  margin-bottom: 0;
-  padding-top: 20px;
-  padding-bottom: 20px;
 }
 
 .navbar-container {
@@ -2367,7 +2364,7 @@ textarea.w-select {
 .dropdown-simple {
   border: none;
   border-radius: 0%;
-
+  padding: 8px 20px;
 }
 
 .dropdown-simple:hover {
@@ -2763,6 +2760,17 @@ textarea.w-select {
 
 }
 
+.input-group>input {
+  flex-grow: 1;
+  flex-basis: auto;
+  flex-shrink: 0.5;
+  border: 1px solid var(--grey-border);
+}
+.input-group>button{
+  
+  flex-shrink: 2;
+}
+
 .controls-row {
   display: flex;
   justify-content: space-around;
@@ -2826,18 +2834,18 @@ textarea.w-select {
 }
 
 
-.popup-container {
+#quickplay-select-container {
   position: relative;
   display: none;
 }
 
-.popup-wrapper{
+#quickplay-select-wrapper{
   position: absolute;
   top: auto;
   bottom: 0;
   left: auto;
   right: auto;
-  text-align: center;
+  z-index: 1000;
   padding: 10px 10px 10px 30px;
   
   background-color: rgb(255, 255, 255);
@@ -2847,17 +2855,18 @@ textarea.w-select {
   overflow-y: auto;
 }
 
-.popup-content{
+#quickplay-select-content{
   width: 100%;
-
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
-.popup-item{
+.select-item{
   padding: 10px;
   border-bottom: 1px solid transparent;
  
 }
-.popup-item:hover{
+.select-item:hover{
   /* background-color: #a1a1a15b; */
   .search-result{
     scale: 1.1;
@@ -2870,6 +2879,7 @@ textarea.w-select {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
 }
 
 .search-result{
@@ -2881,4 +2891,70 @@ textarea.w-select {
   margin: auto;
 }
 
+.margin-top{
+  margin-top: 10px;
+}
 
+.popup-container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-wrapper{
+  background-color: #fff;
+  position: relative;
+
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.popup-content{
+  width: 100%;
+}
+
+.popup-close{
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 6px;
+  cursor: pointer;
+}
+
+#add-song-container{
+  display: flex;
+  justify-content: space-around;
+
+}
+
+.songs-search-input{
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px solid black;
+  width: 90%;
+  
+}
+
+.pad-5{
+  padding: 5px;
+}
+
+.songs-select-content{
+  max-height: 30vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
