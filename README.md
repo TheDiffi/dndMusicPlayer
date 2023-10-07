@@ -5,7 +5,7 @@ Unnoticed, it has a HUGE impact on the atmosphere in the room and helps to immer
 The Goal of this Project is simplifying playing, pausing and especially switching music down to the press of a single button. 
 
 ## NEW: Now installable via executable
-I finally got around to learn how building and distributing works with elektron.
+I finally got around to learn how building and distributing works with electron.
 On the right side under *releases* you can find the setup.exe of the latest version.
 Currently there is sadly no finished version, I started reworking and am not done, so many basic features don't work.
 
