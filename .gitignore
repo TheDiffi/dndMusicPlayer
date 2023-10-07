@@ -5,4 +5,5 @@ out/
 dist/
 
 # ignore .env
-
+.env
+```
