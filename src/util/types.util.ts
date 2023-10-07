@@ -11,6 +11,8 @@ export enum IpcS {
 	ambienceClose = "ambienceClose",
 	addSongPopup = "addSongPopup",
 	ambienceDuplicateCheck = "ambienceDuplicateCheck",
+	saveProfiles = "saveProfiles",
+	saveSongs = "saveSongs",
 
 	testSend = "testSend",
 }

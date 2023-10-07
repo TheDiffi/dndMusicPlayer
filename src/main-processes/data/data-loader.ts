@@ -17,6 +17,7 @@ type ProfileJson = {
 	scenes: Scene[] | undefined;
 	defaultMusic: string;
 };
+
 type ProfilesJson = { profiles: ProfileJson[] } | undefined;
 
 //--------------------General--------------------
@@ -101,6 +102,11 @@ export function appendProfileToJson(profile: Profile) {
 	writeFormattedJson({ profiles: profiles }, dataPaths.profiles);
 }
 
+export function saveProfileToJson(profiles: Profile[]) {
+	const parsedProfiles = profiles.map((profile) => parseProfileToJson(profile));
+	writeFormattedJson({ profiles: parsedProfiles }, dataPaths.profiles);
+}
+
 export function deleteProfileFromJson(profile: Profile) {
 	let profiles = readFormattedJson<ProfilesJson>(dataPaths.profiles)!.profiles;
 
@@ -127,6 +133,14 @@ export function appendSongToJson(song: Song) {
 	// appends the song to the correct array
 	songs.push(song);
 
+	//overwrites the file
+	writeFormattedJson({ songs: songs }, dataPaths.songs);
+}
+
+export function saveSongsToJson(songs: Song[]) {
+	if (undefined === songs) {
+		throw Error("songs could not be saved correctly");
+	}
 	//overwrites the file
 	writeFormattedJson({ songs: songs }, dataPaths.songs);
 }

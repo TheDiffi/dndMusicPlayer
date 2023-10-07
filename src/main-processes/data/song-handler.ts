@@ -1,5 +1,5 @@
 import { IpcS, IpcR, Song } from "../../util/types.util";
-import { appendSongToJson, deleteSongFromJson, readSongsJson } from "./data-loader";
+import { saveSongsToJson, deleteSongFromJson, readSongsJson, appendSongToJson } from "./data-loader";
 import { ipcMain } from "electron";
 
 const allMusicSongs = new Map<string, Song>(/*key=id, value=songObj*/);
@@ -25,6 +25,11 @@ ipcMain.on(IpcS.deleteSong, (event: any, songTopic: string, songType: string) =>
 	let song = getSongFromTopicAndType(songTopic, songType);
 	deleteSongFromJson(song);
 	loadSongs();
+});
+
+ipcMain.on(IpcS.saveSongs, (event: any, songs: Song[]) => {
+	console.log("saving songs");
+	saveSongsToJson(songs);
 });
 
 function getSongFromTopicAndType(songTopic: string, songType: string = "") {
@@ -60,7 +65,6 @@ function getSongFromId(songId: string): Song | undefined {
 	return song;
 }
 
-
 function loadSongs() {
 	//reads and parses json file
 	let songs = readSongsJson();
@@ -71,16 +75,14 @@ function loadSongs() {
 
 	//clears and fills the maps
 	allMusicSongs.clear();
-  	allAmbienceSongs.clear();
+	allAmbienceSongs.clear();
 
 	songs.forEach((song: Song) => {
-    if (song.type === "music") allMusicSongs.set(song.id, song);
-    else allAmbienceSongs.set(song.id, song);
+		if (song.type === "music") allMusicSongs.set(song.id, song);
+		else allAmbienceSongs.set(song.id, song);
 	});
 
 	return songs;
 }
 
-export { allMusicSongs, allAmbienceSongs, getSongFromId, loadSongs};
-
-
+export { allMusicSongs, allAmbienceSongs, getSongFromId, loadSongs };

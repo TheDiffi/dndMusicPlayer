@@ -5,16 +5,30 @@ import { ytPlayerMusicMain, ytPlayersAmbience } from "./renderer-sketch";
 const ipc = electron.ipcRenderer;
 
 let profiles: Map<string, Profile> = new Map(/* id, Profile */);
-export function getProfiles() {return profiles};
-export function setProfiles(newProfiles: Map<string, Profile>) {profiles = newProfiles};
-export function getProfile(id: string) {return profiles.get(id)};
+export function getProfiles() {
+	return profiles;
+}
+export function setProfiles(newProfiles: Map<string, Profile>) {
+	profiles = newProfiles;
+}
+export function getProfile(id: string) {
+	return profiles.get(id);
+}
 let currentProfile: Profile;
-export function getCurrentProfile() {return currentProfile};
-export function setCurrentProfile(newProfile: Profile) {currentProfile = newProfile};
+export function getCurrentProfile() {
+	return currentProfile;
+}
+export function setCurrentProfile(newProfile: Profile) {
+	currentProfile = newProfile;
+}
 
 let allSongs: Song[];
-export function getAllSongs() {return allSongs};
-export function setAllSongs(newSongs: Song[]) {allSongs = newSongs};
+export function getAllSongs() {
+	return allSongs;
+}
+export function setAllSongs(newSongs: Song[]) {
+	allSongs = newSongs;
+}
 
 const docIds = {
 	buttonContainers: {
@@ -44,28 +58,30 @@ const htmlPresets = {
 	},
 };
 
-
 export function loadProfiles() {
-    setProfiles(ipc.sendSync(IpcS.getProfiles))
+	profiles = new Map();
+	ipc.sendSync(IpcS.getProfiles).forEach((profile: Profile) => {
+		profiles.set(profile.id, profile);
+	});
 
-    const selector = document.getElementById("profile-selector");
-    if (!selector) throw Error("Could not find profile selector");
-    getProfiles().forEach((profile) => {
-        const option = document.createElement("option");
-        option.value = profile.id;
-        //first letter uppercase
-        option.text = profile.name.charAt(0).toUpperCase() + profile.name.slice(1);
-        selector.appendChild(option);
-    });
+	const selector = document.getElementById("profile-selector");
+	if (!selector) throw Error("Could not find profile selector");
+	getProfiles().forEach((profile) => {
+		const option = document.createElement("option");
+		option.value = profile.id;
+		//first letter uppercase
+		option.text = profile.name.charAt(0).toUpperCase() + profile.name.slice(1);
+		selector.appendChild(option);
+	});
 
-    loadProfile("allSongs", false);
+	loadProfile("allSongs", false);
 }
 
 export function loadProfile(profileId: string, autoplay: boolean = true) {
-	if (getCurrentProfile() && getCurrentProfile().id === profileId) return;
+	//if (getCurrentProfile() && getCurrentProfile().id === profileId) return;
 	console.log("Loading Profile: " + profileId);
 	//loads all songs profile
-	let profile: Profile | undefined = profileId === "allSongs" ? getAllSongsProfile() : getProfile(profileId);
+	let profile: Profile | undefined = (profileId === "allSongs" || profileId === "0") ? getAllSongsProfile() : getProfile(profileId);
 
 	if (!profile) {
 		console.error("Profile not found");
@@ -93,17 +109,6 @@ function getAllSongsProfile() {
 	};
 	return profile;
 }
-
-/* export function addSongToProfile(song: Song) {
-    //get profile
-    const profile = getProfile();
-
-    //add song to profile
-    profile.songs.push(song);
-
-    //save profile
-    saveProfile(profile);
-} */
 
 function renderProfile(profile: Profile) {
 	//generate song buttons
@@ -175,7 +180,7 @@ function generateSongBtn(song: Song, type: "music" | "ambience"): HTMLElement {
 	return button;
 }
 
-function musicButtonOnClick(button: HTMLElement, ) {
+function musicButtonOnClick(button: HTMLElement) {
 	switch (button.getAttribute("function")) {
 		case "play":
 			playMusicFromButton(button);
@@ -185,7 +190,7 @@ function musicButtonOnClick(button: HTMLElement, ) {
 	}
 }
 
-function playMusicFromButton(button: HTMLElement, ) {
+function playMusicFromButton(button: HTMLElement) {
 	playMusic(button.id, ytPlayerMusicMain);
 	setMusicButtonToPlaying(button);
 	console.log(`Playing ${JSON.stringify(button.id)}`);
@@ -224,7 +229,7 @@ export function playAmbience(song: Song | undefined) {
 	console.log(song);
 	//generates player
 	const player = appendAmbiencePlayer(document.getElementById("ambience-player-container")!, song);
-    ytPlayersAmbience.push(player);
+	ytPlayersAmbience.push(player);
 
 	console.log(`Playing ${JSON.stringify(song.id)}`);
 }
@@ -287,3 +292,42 @@ function loadScene(scene: Scene) {
 	console.error("Not implemented yet");
 }
 
+export function addSongToCurrentProfile(song: Song) {
+	if (!(currentProfile.id == "0")) {
+		currentProfile = addSongToProfile(song, currentProfile.id);
+	}
+	loadProfile(currentProfile.id, true);
+	return currentProfile;
+}
+
+export function addSongToProfile(song: Song, profileId: string) {
+	//get profile
+	const profile = profiles.get(profileId);
+	if (!profile) throw Error("Profile not found");
+
+	//add song to profile
+	profile.songs[song.type].push(song);
+
+	//save profile
+	saveProfiles();
+
+	return profile;
+}
+
+function saveProfiles() {
+	ipc.send(IpcS.saveProfiles, profiles);
+}
+
+export function saveSong(song: Song) {
+    allSongs.find((s) => s.id === song.id) ? updateSong(song) : addSong(song);
+	ipc.send(IpcS.saveSongs, allSongs);
+}
+
+function addSong(song: Song) {
+    allSongs.push(song);
+}
+
+function updateSong(song: Song) {
+    const index = allSongs.findIndex((s) => s.id === song.id);
+    allSongs[index] = song;
+}

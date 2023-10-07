@@ -1,19 +1,19 @@
 import { ipcMain } from "electron";
 import { IpcS, Profile, Song } from "../../util/types.util";
-import { readProfilesJson, readSongsJson } from "./data-loader";
+import { readProfilesJson, readSongsJson, saveProfileToJson } from "./data-loader";
 
-const profiles: Map<string, Profile> = new Map();
 
 ipcMain.on(IpcS.getProfile, (event: any, profileId: string) => {
     console.info("getProfile: " + profileId);
+	const profiles = loadProfiles();
 
 	if(profileId === "0") return getAllSongsProfile();
 	//tries if the profile is already loaded
-	let profile = profiles.get(profileId);
+	let profile = profiles.find((profile) => profile.id === profileId);
 	//if not, it reads the profiles.json and loads the profile and tries again
 	if (!profile) {
 		loadProfiles();
-		profile = profiles.get(profileId);
+		profile = profiles.find((profile) => profile.id === profileId);
 	}
     if (!profile) {
         event.returnValue = undefined;
@@ -42,12 +42,16 @@ function getAllSongsProfile(){
 }
 
 ipcMain.on(IpcS.getProfiles, (event: any) => {
-	loadProfiles();
+	const profiles = loadProfiles();
 	event.returnValue = profiles;
 });
 
 export function loadProfiles() {
-	readProfilesJson().forEach((profile) => profiles.set(profile.id, profile));
+	return readProfilesJson();
 }
 
+ipcMain.on(IpcS.saveProfiles, (event: any, profiles: Profile[]) => {
+	console.log("saving profiles");
+	saveProfileToJson(profiles);
 
+});

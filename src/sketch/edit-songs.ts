@@ -2,6 +2,7 @@
 
 import { Song } from "../util/types.util";
 import { youTubeSongSearch } from "../util/yt.util";
+import { addSongToCurrentProfile, addSongToProfile, saveSong } from "./profile-handler";
 
 export function renderAddSongPopup(type: "music" | "ambience") {
 	//create popup element
@@ -155,6 +156,10 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 
 	//if there is no song name input, generate one
 	if (!input) {
+        //remove all other inputs
+		document.querySelectorAll(".give-song-name-input").forEach((input) => {
+			input.remove();
+		});
 		//generate input for song name
 		const songNameInput = document.createElement("input");
 		songNameInput.type = "text";
@@ -162,10 +167,7 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 		songNameInput.placeholder = "Enter Title Of Song To Save";
 		item?.appendChild(songNameInput);
 
-		//remove all other inputs
-		document.querySelectorAll(".give-song-name-input").forEach((input) => {
-			input.remove();
-		});
+		
 	} else {
 		//get song name
 		const songName = input.value;
@@ -183,15 +185,14 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 		};
 
 		//add song to profile
-		//addSongToProfile(song);
+        saveSong(song);
+		addSongToCurrentProfile(song);
 
 		// done
 		input.remove();
 		button.replaceWith("✅");
 	}
 }
-
-
 
 async function renderYTSearchFunction(
 	input: string,
