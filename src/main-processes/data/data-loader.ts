@@ -103,6 +103,7 @@ export function appendProfileToJson(profile: Profile) {
 }
 
 export function saveProfileToJson(profiles: Profile[]) {
+	console.log(profiles)
 	const parsedProfiles = profiles.map((profile) => parseProfileToJson(profile));
 	writeFormattedJson({ profiles: parsedProfiles }, dataPaths.profiles);
 }

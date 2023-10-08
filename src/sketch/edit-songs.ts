@@ -2,7 +2,7 @@
 
 import { Song } from "../util/types.util";
 import { youTubeSongSearch } from "../util/yt.util";
-import { addSongToCurrentProfile, addSongToProfile, saveSong } from "./profile-handler";
+import { addSongToCurrentProfile, addSongToProfile, lookupSongs, saveSong } from "./profile-handler";
 
 export function renderAddSongPopup(type: "music" | "ambience") {
 	//create popup element
@@ -156,7 +156,7 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 
 	//if there is no song name input, generate one
 	if (!input) {
-        //remove all other inputs
+		//remove all other inputs
 		document.querySelectorAll(".give-song-name-input").forEach((input) => {
 			input.remove();
 		});
@@ -166,8 +166,6 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 		songNameInput.classList.add("w-input", "div-100w", "give-song-name-input");
 		songNameInput.placeholder = "Enter Title Of Song To Save";
 		item?.appendChild(songNameInput);
-
-		
 	} else {
 		//get song name
 		const songName = input.value;
@@ -185,7 +183,8 @@ function addSongBtnOnClick(ytId: string, button: HTMLButtonElement, type: "music
 		};
 
 		//add song to profile
-        saveSong(song);
+		console.log(song);
+		saveSong(song);
 		addSongToCurrentProfile(song);
 
 		// done
@@ -248,7 +247,7 @@ export function generateSearchResultHtml(name: string, id: string, options: Sear
 	return item;
 }
 
-function generateSongSearch(): HTMLDivElement {
+function generateSongSearch() {
 	/*  <div class="song-search-container div-100w pad-5">
                 <h5>Saved Songs</h5>
                 <div class="songs-search-wrapper">
@@ -300,6 +299,41 @@ function generateSongSearch(): HTMLDivElement {
 	searchContainer.appendChild(searchWrapper);
 	searchContainer.appendChild(selectContainer);
 	container.appendChild(searchContainer);
+
+	input.addEventListener("change", () => {
+		const searchResults = lookupSongs(input.value, 10);
+		searchResults.forEach(() => {
+			const searchResultItemContainer = document.createElement("div");
+			//creates a item for each result
+			searchResults.forEach((s) => {
+				const searchResultItem = generateSearchResultHtml(s.topic, s.id, {
+					buttons: [
+						{
+							innerHTML: "+🎵",
+							onClick: (ytId: string, button) => {
+								//add song to profile
+								addSongToCurrentProfile(s);
+								button.replaceWith("✅");
+							},
+						},
+						{
+							innerHTML: "+✨",
+							onClick: (ytId: string, button) => {
+								//add song to profile
+								addSongToCurrentProfile(s);
+								button.replaceWith("✅");
+							},
+						},
+					],
+				});
+
+				searchResultItemContainer.appendChild(searchResultItem);
+			});
+			selectContent.appendChild(searchResultItemContainer)
+		});
+
+
+	});
 
 	return container;
 }

@@ -63,6 +63,7 @@ export function loadProfiles() {
 	ipc.sendSync(IpcS.getProfiles).forEach((profile: Profile) => {
 		profiles.set(profile.id, profile);
 	});
+	console.log(profiles);
 
 	const selector = document.getElementById("profile-selector");
 	if (!selector) throw Error("Could not find profile selector");
@@ -81,17 +82,19 @@ export function loadProfile(profileId: string, autoplay: boolean = true) {
 	//if (getCurrentProfile() && getCurrentProfile().id === profileId) return;
 	console.log("Loading Profile: " + profileId);
 	//loads all songs profile
-	let profile: Profile | undefined = (profileId === "allSongs" || profileId === "0") ? getAllSongsProfile() : getProfile(profileId);
+	let profile: Profile | undefined =
+		profileId === "allSongs" || profileId === "0" ? getAllSongsProfile() : getProfile(profileId);
 
 	if (!profile) {
 		console.error("Profile not found");
 		return;
 	}
 
+	console.log("Current Profile: " + profile);
 	setCurrentProfile(profile);
 	renderProfile(profile);
 
-	if ((profile.id = "0")) autoplay = false;
+	if (profile.id === "0") autoplay = false;
 	//play default
 	if (profile.defaultSong && autoplay) playMusic(profile.defaultSong.id, ytPlayerMusicMain);
 }
@@ -315,19 +318,37 @@ export function addSongToProfile(song: Song, profileId: string) {
 }
 
 function saveProfiles() {
-	ipc.send(IpcS.saveProfiles, profiles);
+	const profilesList: Profile[] = Array.from(profiles.values());
+	ipc.send(IpcS.saveProfiles, profilesList);
 }
 
 export function saveSong(song: Song) {
-    allSongs.find((s) => s.id === song.id) ? updateSong(song) : addSong(song);
+	allSongs.find((s) => s.id === song.id) ? updateSong(song) : addSong(song);
 	ipc.send(IpcS.saveSongs, allSongs);
 }
 
 function addSong(song: Song) {
-    allSongs.push(song);
+	allSongs.push(song);
 }
 
 function updateSong(song: Song) {
-    const index = allSongs.findIndex((s) => s.id === song.id);
-    allSongs[index] = song;
+	const index = allSongs.findIndex((s) => s.id === song.id);
+	allSongs[index] = song;
+}
+
+export function lookupSongs(keyphrase: string, maxResults = 10) {
+	let results: Song[] = [];
+
+	if (!keyphrase) {
+		results = allSongs;
+	} else {
+		keyphrase = keyphrase.toLowerCase();
+		allSongs.forEach((s) => {
+			if (s.topic.toLowerCase().includes(keyphrase)) results.push(s);
+		});
+	}
+
+	results.splice(maxResults);
+
+	return results;
 }
