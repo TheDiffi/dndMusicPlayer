@@ -1,19 +1,26 @@
 import electron from "electron";
 import { IpcS, Song } from "../util/types.util";
 import {
-	appendMusicPlayer, closePlayer,
-	extractYtIdFromLink, playMusic, setAmbiencePlayerState, youTubeSongSearch, YTPlayer
+	appendMusicPlayer,
+	closePlayer,
+	extractYtIdFromLink,
+	playMusic,
+	setAmbiencePlayerState,
+	youTubeSongSearch,
+	YTPlayer
 } from "../util/yt.util";
-import { generateSearchResultHtml, renderAddSongPopup } from "./edit-songs";
-import { loadProfile, loadProfiles, playAmbience, setAllSongs } from "./profile-handler";
+import {
+	generateSearchResultHtml,
+	NewProfilePopup,
+	renderAddSongGenericPopup,
+	renderAddSongToProfilePopup
+} from "./edit-popups";
+import { getCurrentProfile, loadProfiles, playAmbience, renderProfileId, setAllSongs } from "./profile-handler";
 
 const ipc = electron.ipcRenderer;
 
 export let ytPlayerMusicMain: YTPlayer;
 export let ytPlayersAmbience: YTPlayer[] = [];
-
-
-
 
 function init() {
 	//creates the music player
@@ -29,25 +36,33 @@ function init() {
 
 	loadProfiles();
 
-	
-
 	//load the event listeners
 	loadEventListeners();
 }
 
-
-
-
-
-
 //--------------------Event Listeners--------------------
 function loadEventListeners() {
+	document.getElementById("ping-btn")?.addEventListener("click", () => {
+		const profile = new NewProfilePopup();
+	});
+
 	document.getElementById("profile-selector")?.addEventListener("change", () => {
-		loadProfile((document.getElementById("profile-selector") as HTMLInputElement).value);
+		let value = (document.getElementById("profile-selector") as HTMLInputElement).value;
+		switch (value) {
+			case "allSongs":
+				setAllSongs(ipc.sendSync(IpcS.getAllSongs));
+				renderProfileId(value);
+				break;
+			case "addProfile":
+				const profile = new NewProfilePopup();
+				break;
+			default:
+				renderProfileId(value);
+		}
 	});
 
 	document.getElementById("all-songs-btn")?.addEventListener("click", () => {
-		loadProfile("allSongs");
+		renderProfileId("allSongs");
 	});
 
 	document.getElementById("pause-all-btn")?.addEventListener("click", () => {
@@ -87,10 +102,12 @@ function loadEventListeners() {
 	});
 
 	document.getElementById("add-music-btn")?.addEventListener("click", () => {
-		renderAddSongPopup("music");
+		if (getCurrentProfile().id === "allSongs") renderAddSongGenericPopup("music");
+		else renderAddSongToProfilePopup("music");
 	});
 	document.getElementById("add-ambience-btn")?.addEventListener("click", () => {
-		renderAddSongPopup("ambience");
+		if (getCurrentProfile().id === "allSongs") renderAddSongGenericPopup("ambience");
+		else renderAddSongToProfilePopup("ambience");
 	});
 }
 
@@ -108,27 +125,32 @@ async function quickSearch(input: string) {
 		let name = ytData.snippet.title;
 		if (name.length > 40) name = name.substring(0, 35) + "...";
 
-		const element = generateSearchResultHtml(name, ytData.id.videoId, {buttons: [{
-				innerHTML: "🎵",
-				onClick: () => {
-					//adds event listeners to the buttons
-					playMusic(ytData.id.videoId, ytPlayerMusicMain);
-					document.getElementById("quickplay-select-container")!.style.display = "none";
+		const element = generateSearchResultHtml(name, ytData.id.videoId, {
+			buttons: [
+				{
+					innerHTML: "🎵",
+					idClass: "quickplay-select-btn",
+					onClick: () => {
+						//adds event listeners to the buttons
+						playMusic(ytData.id.videoId, ytPlayerMusicMain);
+						document.getElementById("quickplay-select-container")!.style.display = "none";
+					},
 				},
-			},
-			{
-				innerHTML: "✨",
-				onClick: () => {
-					const song: Song = {
-						id: ytData.id.videoId,
-						topic: name.substring(0, 6),
-						type: "ambience",
-						volume: 40,
-					};
-					playAmbience(song);
-					document.getElementById("quickplay-select-container")!.style.display = "none";
+				{
+					innerHTML: "✨",
+					idClass: "quickplay-select-btn",
+					onClick: () => {
+						const song: Song = {
+							id: ytData.id.videoId,
+							topic: name.substring(0, 6),
+							type: "ambience",
+							volume: 40,
+						};
+						playAmbience(song);
+						document.getElementById("quickplay-select-container")!.style.display = "none";
+					},
 				},
-			}]
+			],
 		});
 
 		select.appendChild(element);
@@ -136,7 +158,5 @@ async function quickSearch(input: string) {
 	//shows the popup
 	document.getElementById("quickplay-select-container")!.style.display = "block";
 }
-
-
 
 init();

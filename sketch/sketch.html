@@ -68,7 +68,7 @@
 								</li>
 								<li><a id="all-songs-btn" class="nav-link-accent">All Songs</a></li>
 								<li class="nav-menu-item">
-									<a href="#" id="ping" class="button-primary w-button">Test</a>
+									<a href="#" id="ping-btn" class="button-primary w-button">Test</a>
 								</li>
 							</ul>
 						</nav>
@@ -165,14 +165,113 @@
 				<a id="add-ambience-btn" class="add-btn add-song-btn w-button">+</a>
 			</div>
 		</div>
-		<!-- <div class="popup-container">
+		<!--<div class="popup-container">
 			<div class="popup-wrapper">
 				<div class="popup-close big">✖️</div>
-				<div class="popup-title"><h2>Add Songs To Profile</h2></div>
+				<div class="popup-title"><h2>Add Profile</h2></div>
 				<div class="popup-content">
-					<div id="add-song-container" class="div-100w">
-						<div class="song-search-container div-100w pad-5">
-							<h5>Saved Songs</h5>
+					<div class="div-100w" id="add-profile-name">
+						<h5 class="inline-input-group">Name:</h5>
+						<input
+							type="text"
+							class="w-input songs-search-input inline-input-group"
+							id="new-profile-name-input"
+							placeholder="profile name..."
+						/>
+					</div>
+					<div class="div-100w" style="margin-left: 10px; margin-bottom: 5px;" id="profile-autoplay-select">
+						<input type="checkbox" name="autoplay-default-song" id="autoplay-default-song" /> Autoplay
+						Default Song ⚡
+					</div>
+					<div id="select-songs-container" class="popup-cols-container div-100w">
+						<div id="select-music-container" class="div-100w pad-5">
+							<h5>🎵 Music Buttons:</h5>
+							<div class="songs-search-wrapper">
+								<div class="songs-search">
+									<input
+										type="text"
+										class="w-input songs-search-input"
+										id="add-song-songs-search-input"
+										placeholder="songname..."
+									/>
+								</div>
+							</div>
+							<div class="select-container">
+								<div class="select-wrapper">
+									<div class="select-content songs-select-content" id="select-music-content">
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple" checked>
+														+
+													</button>
+													<button class="search-result-button button-simple">⚡</button>
+												</div>
+											</div>
+										</div>
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple">+</button>
+													<button class="search-result-button button-simple button-checked">
+														⚡
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple">+</button>
+													<button class="search-result-button button-simple">⚡</button>
+												</div>
+											</div>
+										</div>
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple">+</button>
+													<button class="search-result-button button-simple">⚡</button>
+												</div>
+											</div>
+										</div>
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple">+</button>
+													<button class="search-result-button button-simple">⚡</button>
+												</div>
+											</div>
+										</div>
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple">+</button>
+													<button class="search-result-button button-simple">⚡</button>
+												</div>
+											</div>
+										</div>
+										<div class="select-item">
+											<div class="search-result-wrapper">
+												<div class="search-result">Test</div>
+												<div>
+													<button class="search-result-button button-simple">+</button>
+													<button class="search-result-button button-simple">⚡</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="select-ambience-container" class="div-100w pad-5">
+							<h5>✨ Ambience Buttons:</h5>
 							<div class="songs-search-wrapper">
 								<div class="songs-search">
 									<input
@@ -190,8 +289,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -199,8 +297,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -208,8 +305,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -217,8 +313,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -226,8 +321,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -235,8 +329,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -244,52 +337,7 @@
 											<div class="search-result-wrapper">
 												<div class="search-result">Test</div>
 												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="youtube-search-big div-100w pad-5">
-							<h5>YT Search</h5>
-							<div class="input-group-wrapper">
-								<div class="input-group">
-									<input
-										type="text"
-										class="w-input"
-										id="add-song-yt-search-input"
-										placeholder="https://www.youtube.com/...."
-									/>
-									<button id="youtube-submit" class="w-input button-simple">Enter</button>
-								</div>
-							</div>
-							<div class="select-container">
-								<div class="select-wrapper">
-									<div class="select-content">
-										<div class="select-item">
-											<div class="search-result-wrapper">
-												<div class="search-result">Test</div>
-												<div>
-													<button class="search-result-button button-simple">+🎵</button>
-													<button class="search-result-button button-simple">+✨</button>
-												</div>
-											</div>
-										</div>
-										<div class="select-item">
-											<div class="search-result-wrapper">
-												<div class="search-result">Test</div>
-												<div>✅</div>
-											</div>
-										</div>
-										<div class="select-item">
-											<div class="search-result-wrapper">
-												<div class="search-result">Test</div>
-												<div>
-													✅
-													<button class="search-result-button button-simple">+✨</button>
+													<button class="search-result-button button-simple">+</button>
 												</div>
 											</div>
 										</div>
@@ -298,6 +346,7 @@
 							</div>
 						</div>
 					</div>
+					<div class="popup-confirm"><button class="confirm-button">Confirm</button></div>
 				</div>
 			</div>
 		</div>

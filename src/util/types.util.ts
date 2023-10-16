@@ -46,6 +46,7 @@ export interface Profile {
 	id: string;
 	songs: Songs;
 	scenes: Scene[] | undefined;
+	autoplay?: boolean;
 	defaultSong?: Song;
 }
 

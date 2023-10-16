@@ -69,29 +69,29 @@ export function readProfilesJson(): Profile[] {
 
 	const profiles: Profile[] = rawData.map((profile) => parseJsonToProfile(profile));
 
-	console.log("Read Profiles: " );
+	console.log("Read Profiles: ");
 	console.log(profiles);
 
 	return profiles;
 }
 
 function parseJsonToProfile(data: ProfileJson): Profile {
-	let defaultMusic: Song | undefined= getSongFromId(data.defaultMusic);
+	let defaultMusic: Song | undefined = getSongFromId(data.defaultMusic);
 	let songs: Songs = {
-		music: data.musicIds.map((id) => getSongFromId(id)).filter((song) => song !== undefined) as Song[], 
+		music: data.musicIds.map((id) => getSongFromId(id)).filter((song) => song !== undefined) as Song[],
 		ambience: data.ambienceIds.map((id) => getSongFromId(id)).filter((song) => song !== undefined) as Song[],
 	};
-	return { name: data.name, id: data.id, songs: songs, defaultSong: defaultMusic, scenes: data.scenes};
+	return { name: data.name, id: data.id, songs: songs, defaultSong: defaultMusic, scenes: data.scenes };
 }
 
 function parseProfileToJson(profile: Profile): ProfileJson {
 	return {
 		name: profile.name,
 		id: profile.id,
-		musicIds: profile.songs.music.map((song) => song.id),
-		ambienceIds: profile.songs.ambience.map((song) => song.id),
+		musicIds: profile.songs.music.map((song) => song?.id),
+		ambienceIds: profile.songs.ambience.map((song) => song?.id),
 		scenes: profile.scenes,
-		defaultMusic: profile.defaultSong?.id ?? profile.songs.music[0].id,
+		defaultMusic: profile.defaultSong?.id ?? "",
 	};
 }
 
@@ -103,7 +103,7 @@ export function appendProfileToJson(profile: Profile) {
 }
 
 export function saveProfileToJson(profiles: Profile[]) {
-	console.log(profiles)
+	console.log(profiles);
 	const parsedProfiles = profiles.map((profile) => parseProfileToJson(profile));
 	writeFormattedJson({ profiles: parsedProfiles }, dataPaths.profiles);
 }
