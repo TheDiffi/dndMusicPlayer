@@ -7,13 +7,13 @@ import {
 	playMusic,
 	setAmbiencePlayerState,
 	youTubeSongSearch,
-	YTPlayer
+	YTPlayer,
 } from "../util/yt.util";
 import {
 	generateSearchResultHtml,
 	NewProfilePopup,
 	renderAddSongGenericPopup,
-	renderAddSongToProfilePopup
+	renderAddSongToProfilePopup,
 } from "./edit-popups";
 import { getCurrentProfile, loadProfiles, playAmbience, renderProfileId, setAllSongs } from "./profile-handler";
 
@@ -21,6 +21,8 @@ const ipc = electron.ipcRenderer;
 
 export let ytPlayerMusicMain: YTPlayer;
 export let ytPlayersAmbience: YTPlayer[] = [];
+
+let contextMenu: HTMLDivElement | undefined;
 
 function init() {
 	//creates the music player
@@ -109,6 +111,88 @@ function loadEventListeners() {
 		if (getCurrentProfile().id === "allSongs") renderAddSongGenericPopup("ambience");
 		else renderAddSongToProfilePopup("ambience");
 	});
+
+	document.oncontextmenu = songButtonRightClick;
+}
+
+class ContextMenu {
+	element: HTMLDivElement;
+	shown: boolean;
+
+	constructor() {
+		this.shown = false;
+		this.element = this.genGenericMenu();
+	}
+
+	private genGenericMenu():HTMLDivElement{
+	 /* <div id="contextMenu" class="context-menu"> 
+        <ul> 
+            <li><a href="#">Element-1</a></li> 
+            <li><a href="#">Element-2</a></li> 
+            <li><a href="#">Element-3</a></li> 
+        </ul> 
+   		</div> */ 
+		const container = document.createElement("div");
+		container.className = "context-menu";
+		container.id = "contextMenu";
+
+		const list = document.createElement("ul");
+		const item = document.createElement("li");
+		const content = document.createElement("a");
+		content.innerText = "Element1";
+		item.appendChild(content);
+
+		const item2 = document.createElement("li");
+		const content2 = document.createElement("a");
+		content2.innerText = "Element2";
+		item2.appendChild(content2);
+
+		list.appendChild(item);
+		list.appendChild(item2);
+
+		container.appendChild(list);
+
+		return container;
+	}
+
+	show(e: MouseEvent) {
+		if(this.shown) this.hide();
+
+		this.element.style.left = e.pageX + "px";
+		this.element.style.top = e.pageY + "px";
+		document.body.appendChild(this.element)
+		this.shown = true;
+	}
+
+	showCustom(customElem: HTMLDivElement) {}
+
+	hide() {
+		document.body.removeChild(this.element)
+		this.shown = false;
+	}
+
+	register(element:Element){
+		
+	}
+}
+function songButtonRightClick(e) {
+	e.preventDefault();
+
+	if (contextMenu) hideContextMenu();
+	else {
+		var menu = document.getElementById("contextMenu")!;
+
+		menu.style.display = "block";
+		menu.style.left = e.pageX + "px";
+		menu.style.top = e.pageY + "px";
+	}
+
+	document.onclick = hideContextMenu;
+}
+
+function hideContextMenu() {
+	contextMenu?.remove();
+	contextMenu = undefined;
 }
 
 async function quickSearch(input: string) {

@@ -720,7 +720,7 @@ export class NewProfilePopup {
 		});
 	}
 
-	private renderChecks(type: "music" | "ambience") {
+	renderChecks(type: "music" | "ambience") {
 		this.popup.querySelectorAll(".check-" + type + "-button").forEach((button) => {
 			// is the button checked 
 			const checked: boolean = this.checkedSongs[type].includes(button.getAttribute("ytId")!) ?? false;
