@@ -7,17 +7,18 @@ import { ipcMain } from "electron";
 import url from "url";
 import { loadSongs } from "./main-processes/data/song-handler";
 import { loadProfiles } from "./main-processes/data/profile-handler";
+import * as dotenv from "dotenv";
 
 export { BrowserWindow, ipcMain, mainWin };
 
 // Enable live reload for all the files inside your project directory
-require('electron-reload')(__dirname);
+//require('electron-reload')(__dirname);
 const indexPath = path.join(__dirname, "../sketch/sketch.html");
 let mainWin;
 
 function initialize() {
 	//load .env file
-	require("dotenv").config();
+	dotenv.config();
 	
 
 	console.info("Loading Scripts...");
