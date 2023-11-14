@@ -2944,13 +2944,7 @@ textarea.w-select {
   cursor: pointer;
 }
 
-#add-song-container{
-  display: flex;
-  justify-content: space-around;
-
-}
-
-.popup-cols-container{
+.popup-content-flex-container{
   display: flex;
   justify-content: space-around;
 

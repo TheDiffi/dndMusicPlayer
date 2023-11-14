@@ -387,8 +387,9 @@ async function youTubeSearchRequest(
 	}
 }
 
-function youTubeSongSearch(searchString: string, type: "music" | "ambience", maxResults: number = 3) {
-	const dndSearch = "fantasy dnd " + type + " " + searchString;
+function youTubeSongSearch(searchString: string, type?: "music" | "ambience", maxResults: number = 3) {
+
+	const dndSearch = "fantasy dnd " + (type ? type : "") + " " + searchString;
 	return youTubeSearchRequest(dndSearch, maxResults, "video");
 }
 
